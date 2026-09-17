@@ -1,0 +1,110 @@
+{
+    "version": 1,
+    "name": "VRGameplayControls",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "30aa77cd-88e5-4727-94b3-6a1e9123aeea",
+            "actions": [
+                {
+                    "name": "FireRight",
+                    "type": "Button",
+                    "id": "88e0cf3e-30c1-4d8e-828d-b473a6f7e3d3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "FireLeft",
+                    "type": "Button",
+                    "id": "fda0c0b8-8680-4f3c-a582-47fcda0687ca",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "ReloadRight",
+                    "type": "Button",
+                    "id": "6e5fbc35-30b5-4626-9764-ccbc92ccb3cd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "ReloadLeft",
+                    "type": "Button",
+                    "id": "d5aa0b0b-3554-4e3e-ba43-7cfda27abc71",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f5d41e2f-d448-451c-b82e-61d5a3b17ec9",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3537155f-65f7-4a30-b78b-df18f050582f",
+                    "path": "<XRController>{RightHand}/{PrimaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReloadRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f18a75e0-643c-4c00-8f2b-c2503bc4bacf",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReloadLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c04c7f06-2691-46e8-9200-af8e8647dd91",
+                    "path": "<XRController>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b9a445fc-fb3f-4370-b188-9d652b15f4b1",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

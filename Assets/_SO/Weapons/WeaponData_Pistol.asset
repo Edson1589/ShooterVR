@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: WeaponData_Pistol
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   weaponName: Pistola
+  weaponPrefab: {fileID: 3096024554046610633, guid: 5ccde08f2d1a75b4a80b7b0bc3b10816, type: 3}
   bulletData: {fileID: 11400000, guid: 83598f5780798884c96d0683f4f6e029, type: 2}
-  shotsPerSecond: 4
-  automatic: 0
+  fireCooldown: 0.25
   magazineSize: 12
   reloadDuration: 1.2
-  shotAudio: {fileID: 0}
-  muzzleFlashPrefab: {fileID: 0}

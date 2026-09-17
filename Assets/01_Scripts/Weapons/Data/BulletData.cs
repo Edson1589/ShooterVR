@@ -8,7 +8,7 @@ public class BulletData : ScriptableObject
 
     [Header("Proyectil")]
     public float speed = 25f;
-    public float lifeTime = 3f;
+    public float lifetime = 3f;
 
     [Header("Gameplay")]
     public float damage = 10f;
