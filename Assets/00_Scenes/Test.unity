@@ -1486,14 +1486,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95de80833592610478f875d32eb16040, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovimientoAutomaticoVR
+  m_EditorClassIdentifier: Assembly-CSharp::AutomaticMovementVR
   waypoints:
   - {fileID: 920001002}
   - {fileID: 920002002}
   - {fileID: 920003002}
   - {fileID: 920004002}
-  velocidad: 0.8
-  distanciaLlegada: 0.1
+  speed: 0.8
+  arrivalDistance: 0.1
 --- !u!1 &463984259
 GameObject:
   m_ObjectHideFlags: 0

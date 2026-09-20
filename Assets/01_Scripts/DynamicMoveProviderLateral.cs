@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 /// <summary>
-/// Variante del DynamicMoveProvider del XR Interaction Toolkit que ignora el eje
-/// adelante/atrás del joystick y solo permite el strafe (izquierda/derecha).
-/// Pensado para escenas con MovimientoAutomaticoVR, donde el avance hacia adelante
-/// es controlado por el script de waypoints y no debe competir con el input manual.
+/// Variant of the XR Interaction Toolkit's DynamicMoveProvider that ignores the
+/// joystick's forward/back axis and only allows strafe (left/right).
+/// Intended for scenes using AutomaticMovementVR, where forward movement is
+/// driven by the waypoint script and must not compete with manual input.
 /// </summary>
 public class DynamicMoveProviderLateral : DynamicMoveProvider
 {
