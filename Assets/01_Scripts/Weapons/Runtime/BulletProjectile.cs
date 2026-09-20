@@ -11,13 +11,19 @@ public class BulletProjectile : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    //Configura el proyectil antes de ser disparado.
+    // Configura y lanza el proyectil.
     public void Initialize(BulletData data, Vector3 direction)
     {
+        if (data == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         bulletData = data;
         initialized = true;
 
-        // Velocidad normalizada para que BulletData controle completamente la velocidad del proyectil.
+        // Normalizar para que la velocidad dependa unicamente del valor configurado en BulletData.
         rb.linearVelocity = direction.normalized * bulletData.speed;
 
         Destroy(gameObject, bulletData.lifetime);
@@ -27,7 +33,7 @@ public class BulletProjectile : MonoBehaviour
     {
         if (!initialized) return;
 
-        // Buscar tambien en los padres porque el collider golpeado puede pertenecer a un hijo del objeto que recibe daño.
+        // El collider puede estar en un hijo mientras que el componente que recibe daño se encuentra en el objeto padre.
         IDamageable damageable = collision.collider.GetComponentInParent<IDamageable>();
 
         if (damageable != null)

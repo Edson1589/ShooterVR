@@ -5,10 +5,13 @@ public class WeaponSpawner : MonoBehaviour
     [Header("Arma inicial")]
     public WeaponData startingWeapon;
 
-    [Header("Referencias")]
-    public WeaponShooter weaponShooter;
-
+    private WeaponShooter weaponShooter;
     private GameObject currentWeaponObject;
+
+    private void Awake()
+    {
+        weaponShooter = GetComponent<WeaponShooter>();
+    }
 
     private void Start()
     {
@@ -21,20 +24,32 @@ public class WeaponSpawner : MonoBehaviour
 
         if (weaponData.weaponPrefab == null) return;
 
-        if (currentWeaponObject != null)
-        {
-            Destroy(currentWeaponObject);
-        }
+        RemoveCurrentWeapon();
 
         currentWeaponObject = Instantiate(weaponData.weaponPrefab, transform);
 
         currentWeaponObject.transform.localPosition = Vector3.zero;
+
         currentWeaponObject.transform.localRotation = Quaternion.identity;
 
         WeaponView weaponView = currentWeaponObject.GetComponent<WeaponView>();
 
-        if (weaponView == null) return;
+        if (weaponView == null)
+        {
+            Destroy(currentWeaponObject);
+            currentWeaponObject = null;
 
-        weaponShooter.Configure(weaponData, weaponView.FirePoint);
+            return;
+        }
+
+        weaponShooter.Configure(weaponData, weaponView);
+    }
+
+    private void RemoveCurrentWeapon()
+    {
+        if (currentWeaponObject == null) return;
+
+        Destroy(currentWeaponObject);
+        currentWeaponObject = null;
     }
 }
