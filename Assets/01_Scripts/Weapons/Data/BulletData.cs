@@ -15,4 +15,15 @@ public class BulletData : ScriptableObject
 
     [Header("Prefab")]
     public GameObject projectilePrefab;
+
+    [Header("Efectos")]
+
+    [Tooltip("Efecto que acompaña a la bala durante su trayectoria.")]
+    public GameObject trailEffectPrefab;
+
+    [Tooltip("Efecto que aparece en el arma al realizar el disparo.")]
+    public GameObject shootEffectPrefab;
+
+    [Tooltip("Efecto que aparece cuando la bala impacta contra una superficie u objetivo.")]
+    public GameObject impactEffectPrefab;
 }

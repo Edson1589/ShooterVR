@@ -111,6 +111,14 @@ public class WeaponShooter : MonoBehaviour
 
         projectile.Initialize(bulletData, weaponView.FireDirection);
 
+        if (bulletData.shootEffectPrefab != null)
+        {
+            GameObject shootVfx = Instantiate(bulletData.shootEffectPrefab, weaponView.FirePosition, weaponView.FireRotation);
+            ParticleSystem ps = shootVfx.GetComponent<ParticleSystem>();
+            float lifetime = ps != null ? ps.main.duration + ps.main.startLifetime.constantMax : 1f;
+            Destroy(shootVfx, Mathf.Max(lifetime, 0.5f));
+        }
+
         return true;
     }
 
