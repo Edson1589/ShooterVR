@@ -1,66 +1,62 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class WeaponShooter : MonoBehaviour
 {
-    [Header("Configuración del arma")]
-    public WeaponData weaponData;
-
-    [Header("Referencias")]
-    public Transform firePoint;
-
     [Header("Input")]
     public InputActionReference fireAction;
-    public InputActionReference reloadAction;
+
+    private WeaponData weaponData;
+    private WeaponView weaponView;
+
+    private ReloadGestureDetector reloadGestureDetector;
 
     private int currentAmmo;
     private float nextShotTime;
     private bool isReloading;
 
+    private Coroutine reloadCoroutine;
+
     public int CurrentAmmo => currentAmmo;
+
+    public int MagazineSize => weaponData != null ? weaponData.magazineSize : 0;
+
     public bool IsReloading => isReloading;
+
+    public event Action<int, int> AmmoChanged;
+    public event Action<bool> ReloadStateChanged;
 
     private void Awake()
     {
-        if (weaponData != null)
-        {
-            currentAmmo = weaponData.magazineSize;
-        }
+        reloadGestureDetector = GetComponent<ReloadGestureDetector>();
     }
 
     private void OnEnable()
     {
-        if (fireAction != null)
-        {
-            fireAction.action.Enable();
-        }
+        fireAction?.action.Enable();
 
-        if (reloadAction != null)
-        {
-            reloadAction.action.Enable();
-        }
+        reloadGestureDetector.ReloadGesturePerformed += HandleReloadGesture;
     }
 
     private void OnDisable()
     {
-        if (fireAction != null)
-        {
-            fireAction.action.Disable();
-        }
+        fireAction?.action.Disable();
 
-        if (reloadAction != null)
-        {
-            reloadAction.action.Disable();
-        }
+        reloadGestureDetector.ReloadGesturePerformed -= HandleReloadGesture;
     }
 
     private void Update()
     {
-        if (weaponData == null) return;
+        if (!IsConfigured()) return;
 
         HandleFireInput();
-        HandleReloadInput();
+    }
+
+    private bool IsConfigured()
+    {
+        return weaponData != null && weaponView != null;
     }
 
     private void HandleFireInput()
@@ -73,84 +69,119 @@ public class WeaponShooter : MonoBehaviour
         }
     }
 
-    private void HandleReloadInput()
+    private void HandleReloadGesture()
     {
-        if (reloadAction == null) return;
-
-        if (reloadAction.action.WasPressedThisFrame())
-        {
-            TryReload();
-        }
+        TryReload();
     }
 
     public void TryFire()
     {
-        if (weaponData == null) return;
+        if (!IsConfigured()) return;
 
         if (weaponData.bulletData == null) return;
-
-        if (firePoint == null) return;
 
         if (isReloading) return;
 
         if (Time.time < nextShotTime) return;
 
-        if (currentAmmo <= 0)
-        {
-            TryReload();
-            return;
-        }
+        if (currentAmmo <= 0) return;
 
-        FireProjectile();
+        if (!FireProjectile()) return;
 
         currentAmmo--;
 
         nextShotTime = Time.time + weaponData.fireCooldown;
+
+        NotifyAmmoChanged();
     }
 
-    private void FireProjectile()
+    private bool FireProjectile()
     {
         BulletData bulletData = weaponData.bulletData;
 
-        if (bulletData.projectilePrefab == null) return;
+        if (bulletData.projectilePrefab == null) return false;
 
-        GameObject projectileObject = Instantiate(bulletData.projectilePrefab, firePoint.position, firePoint.rotation);
+        GameObject projectileObject = Instantiate(bulletData.projectilePrefab, weaponView.FirePosition, weaponView.FireRotation);
 
-        if (projectileObject.TryGetComponent(out BulletProjectile projectile))
-        {
-            projectile.Initialize(bulletData, firePoint.forward);
-        }
-        else
+        if (!projectileObject.TryGetComponent(out BulletProjectile projectile))
         {
             Destroy(projectileObject);
+            return false;
         }
+
+        projectile.Initialize(bulletData, weaponView.FireDirection);
+
+        return true;
     }
 
-    public void TryReload()
+    public bool TryReload()
     {
-        if (isReloading) return;
+        if (!IsConfigured()) return false;
 
-        if (currentAmmo >= weaponData.magazineSize) return;
+        if (isReloading) return false;
 
-        StartCoroutine(ReloadRoutine());
+        if (currentAmmo >= weaponData.magazineSize) return false;
+
+        reloadCoroutine = StartCoroutine(ReloadRoutine());
+
+        return true;
     }
 
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
 
+        NotifyReloadStateChanged();
+
         yield return new WaitForSeconds(weaponData.reloadDuration);
 
         currentAmmo = weaponData.magazineSize;
 
         isReloading = false;
+        reloadCoroutine = null;
+
+        NotifyAmmoChanged();
+        NotifyReloadStateChanged();
     }
 
-    public void Configure(WeaponData newWeaponData, Transform newFirePoint)
+    public void Configure(WeaponData newWeaponData, WeaponView newWeaponView)
     {
+        CancelReload();
+
         weaponData = newWeaponData;
-        firePoint = newFirePoint;
+        weaponView = newWeaponView;
+
+        reloadGestureDetector.Configure(newWeaponView);
 
         currentAmmo = weaponData.magazineSize;
+
+        nextShotTime = 0f;
+
+        NotifyAmmoChanged();
+    }
+
+    private void CancelReload()
+    {
+        if (reloadCoroutine != null)
+        {
+            StopCoroutine(reloadCoroutine);
+            reloadCoroutine = null;
+        }
+
+        if (isReloading)
+        {
+            isReloading = false;
+            NotifyReloadStateChanged();
+        }
+    }
+
+    private void NotifyAmmoChanged()
+    {
+        AmmoChanged?.Invoke(currentAmmo, weaponData.magazineSize);
+    }
+
+    private void NotifyReloadStateChanged()
+    {
+        ReloadStateChanged?.Invoke(isReloading);
     }
 }
