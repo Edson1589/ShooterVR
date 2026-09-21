@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "ShooterVR.slnx"
+    "dotnet.defaultSolution": "ShooterVR.slnx",
+    "dotnet.preferCSharpExtension": true
 }

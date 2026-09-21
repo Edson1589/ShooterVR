@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9832dc16d5db305429da93feb34e6032, type: 3}
+  m_Name: BulletData_Pistol
+  m_EditorClassIdentifier: Assembly-CSharp::BulletData
+  bulletName: Bala de pistola
+  speed: 25
+  lifetime: 3
+  damage: 10
+  projectilePrefab: {fileID: 8566862340241086330, guid: 141a2b691f09e204b8f03e5b055d9378, type: 3}
+  trailEffectPrefab: {fileID: 1391366374355100310, guid: d34e91d8e48284b4ba14fa0f1a6c104f, type: 3}
+  shootEffectPrefab: {fileID: 1135749811845299359, guid: dae9f1a19862e9d42aa5c184f559dc05, type: 3}
+  impactEffectPrefab: {fileID: 3837150254769955857, guid: 60f356c85c6ca0a44a201f99095b0d1c, type: 3}
