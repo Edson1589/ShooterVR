@@ -1510,6 +1510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
+  invulnerabilityDuration: 0.5
+  hapticAmplitude: 0.5
+  hapticDuration: 0.15
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
