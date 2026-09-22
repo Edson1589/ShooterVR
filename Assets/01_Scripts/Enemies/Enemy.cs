@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private PlayerHealth player;
     private Collider playerCollider;
     private Collider[] enemyColliders;
+    private Vector3 movementDirection;
     private float currentHealth;
     private float nextAttackTime;
 
@@ -40,6 +41,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        movementDirection = transform.forward;
+        movementDirection.y = 0f;
+        movementDirection.Normalize();
+
         player = FindAnyObjectByType<PlayerHealth>();
         if (player != null)
         {
@@ -51,7 +56,15 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
-        if (IsDead || player == null || player.IsDead) return;
+        if (IsDead) return;
+
+        if (enemyData.enemyType == EnemyType.Normal)
+        {
+            rb.MovePosition(rb.position + movementDirection * enemyData.moveSpeed * Time.fixedDeltaTime);
+            return;
+        }
+
+        if (player == null || player.IsDead) return;
 
         Vector3 direction = TargetPosition - rb.position;
         direction.y = 0f;
@@ -61,7 +74,7 @@ public class Enemy : MonoBehaviour, IDamageable
             rb.MoveRotation(Quaternion.LookRotation(direction));
         }
 
-        if (enemyData.enemyType != EnemyType.Normal) return;
+        if (enemyData.enemyType != EnemyType.Kamikaze) return;
 
         float distance = direction.magnitude;
         float step = Mathf.Min(enemyData.moveSpeed * Time.fixedDeltaTime, Mathf.Max(0f, distance - enemyData.stoppingDistance));
@@ -85,8 +98,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnTriggerStay(Collider other)
     {
+        if (other.isTrigger) return;
         if (IsDead || player == null || player.IsDead) return;
-        if (enemyData.enemyType != EnemyType.Normal || Time.time < nextAttackTime) return;
+        if (enemyData.enemyType != EnemyType.Normal && enemyData.enemyType != EnemyType.Kamikaze) return;
+        if (Time.time < nextAttackTime) return;
         if (other.GetComponentInParent<PlayerHealth>() != player) return;
 
         player.TakeDamage(enemyData.contactDamage);

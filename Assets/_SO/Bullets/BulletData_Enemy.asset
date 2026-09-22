@@ -17,6 +17,6 @@ MonoBehaviour:
   lifetime: 5
   damage: 10
   projectilePrefab: {fileID: 645309155043134879, guid: 77f037d58a67dfb4d896c5754027f87a, type: 3}
-  trailEffectPrefab: {fileID: 0}
-  shootEffectPrefab: {fileID: 0}
-  impactEffectPrefab: {fileID: 0}
+  trailEffectPrefab: {fileID: 1391366374355100310, guid: dde4a012cd48de64c855d37c9405df54, type: 3}
+  shootEffectPrefab: {fileID: 1135749811845299359, guid: b9b749efa1492bb4ca4768ec8cb8d537, type: 3}
+  impactEffectPrefab: {fileID: 3837150254769955857, guid: cf6f10a9dd1da174e8cfb2b281283600, type: 3}

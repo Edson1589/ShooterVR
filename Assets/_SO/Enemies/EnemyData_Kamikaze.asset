@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61dbc5c57cd447643a11e3a38710e487, type: 3}
-  m_Name: EnemyData_Normal
+  m_Name: EnemyData_Kamikaze
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyType: 0
+  enemyType: 2
   maxHealth: 30
   attackCooldown: 1.2
-  moveSpeed: 3
+  moveSpeed: 1.5
   stoppingDistance: 0.65
   contactDamage: 10
   bulletData: {fileID: 0}
