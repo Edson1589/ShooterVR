@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour, IDamageable
 {
+    public static event Action<EnemyData> OnEnemyDied;
+
     [Header("Configuración")]
     public EnemyData enemyData;
 
@@ -122,6 +125,7 @@ public class Enemy : MonoBehaviour, IDamageable
         currentHealth = Mathf.Max(0f, currentHealth - amount);
         if (IsDead)
         {
+            OnEnemyDied?.Invoke(enemyData);
             Destroy(gameObject);
         }
     }

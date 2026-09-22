@@ -25,4 +25,7 @@ public class EnemyData : ScriptableObject
 
     [Header("Enemigo tirador")]
     public BulletData bulletData;
+
+    [Header("Puntuación")]
+    public int scoreValue = 10;
 }
