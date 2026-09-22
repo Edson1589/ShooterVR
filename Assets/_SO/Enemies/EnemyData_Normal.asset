@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyType: 0
   maxHealth: 30
   attackCooldown: 1.2
-  moveSpeed: 1.5
+  moveSpeed: 3
   stoppingDistance: 0.65
   contactDamage: 10
   bulletData: {fileID: 0}

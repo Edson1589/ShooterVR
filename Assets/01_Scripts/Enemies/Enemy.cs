@@ -95,6 +95,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnTriggerStay(Collider other)
     {
+        if (other.isTrigger) return;
         if (IsDead || player == null || player.IsDead) return;
         if (enemyData.enemyType != EnemyType.Normal && enemyData.enemyType != EnemyType.Kamikaze) return;
         if (Time.time < nextAttackTime) return;
