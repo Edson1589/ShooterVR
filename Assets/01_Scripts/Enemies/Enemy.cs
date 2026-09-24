@@ -5,6 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour, IDamageable
 {
     public static event Action<EnemyData> OnEnemyDied;
+    public event Action<Enemy> Removed;
 
     [Header("Configuración")]
     public EnemyData enemyData;
@@ -19,6 +20,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private Vector3 movementDirection;
     private float currentHealth;
     private float nextAttackTime;
+    private bool removalNotified;
 
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
@@ -52,6 +54,23 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         nextAttackTime = Time.time + enemyData.attackCooldown;
+    }
+
+    private void OnEnable()
+    {
+        removalNotified = false;
+    }
+
+    private void OnDisable()
+    {
+        NotifyRemoved();
+    }
+
+    private void NotifyRemoved()
+    {
+        if (removalNotified) return;
+        removalNotified = true;
+        Removed?.Invoke(this);
     }
 
     private void FixedUpdate()
@@ -140,6 +159,7 @@ public class Enemy : MonoBehaviour, IDamageable
         currentHealth = Mathf.Max(0f, currentHealth - amount);
         if (IsDead)
         {
+            NotifyRemoved();
             OnEnemyDied?.Invoke(enemyData);
             Destroy(gameObject);
         }
