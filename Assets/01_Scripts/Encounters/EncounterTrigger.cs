@@ -5,6 +5,8 @@ using UnityEngine;
 public class EncounterTrigger : MonoBehaviour
 {
     [SerializeField] private EncounterController encounter;
+    [InspectorName("Resolver enemigos al entrar")]
+    [SerializeField] private bool resolveOnEnter;
 
     private void Reset()
     {
@@ -30,14 +32,17 @@ public class EncounterTrigger : MonoBehaviour
     {
         if (!isActiveAndEnabled || encounter == null || other.isTrigger) return;
         PlayerHealth player = other.GetComponentInParent<PlayerHealth>();
-        if (player != null && !player.IsDead) encounter.TryBegin(player);
+        if (player == null || player.IsDead) return;
+
+        if (resolveOnEnter) encounter.ResolveRemainingEnemies();
+        else encounter.TryBegin(player);
     }
 
     private void OnDrawGizmosSelected()
     {
         BoxCollider zone = GetComponent<BoxCollider>();
         if (zone == null) return;
-        Gizmos.color = Color.green;
+        Gizmos.color = resolveOnEnter ? Color.magenta : Color.green;
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawWireCube(zone.center, zone.size);
         Gizmos.matrix = Matrix4x4.identity;

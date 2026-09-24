@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour, IDamageable
 {
     public static event Action<EnemyData> OnEnemyDied;
-    public event Action<Enemy> Removed;
+    public event Action<Enemy> Resolved;
 
     [Header("Configuración")]
     public EnemyData enemyData;
@@ -20,10 +20,10 @@ public class Enemy : MonoBehaviour, IDamageable
     private Vector3 movementDirection;
     private float currentHealth;
     private float nextAttackTime;
-    private bool removalNotified;
 
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
+    public bool IsResolved { get; private set; }
 
     private Vector3 TargetPosition => playerCollider != null ? playerCollider.bounds.center : player.transform.position + Vector3.up;
 
@@ -56,26 +56,28 @@ public class Enemy : MonoBehaviour, IDamageable
         nextAttackTime = Time.time + enemyData.attackCooldown;
     }
 
-    private void OnEnable()
-    {
-        removalNotified = false;
-    }
-
     private void OnDisable()
     {
-        NotifyRemoved();
+        NotifyResolved();
     }
 
-    private void NotifyRemoved()
+    private void NotifyResolved()
     {
-        if (removalNotified) return;
-        removalNotified = true;
-        Removed?.Invoke(this);
+        if (IsResolved) return;
+        IsResolved = true;
+        Resolved?.Invoke(this);
+    }
+
+    public void Resolve()
+    {
+        if (IsResolved) return;
+        NotifyResolved();
+        Destroy(gameObject);
     }
 
     private void FixedUpdate()
     {
-        if (IsDead) return;
+        if (IsDead || IsResolved) return;
 
         if (enemyData.enemyType == EnemyType.Normal)
         {
@@ -102,7 +104,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (IsDead || player == null || player.IsDead) return;
+        if (IsDead || IsResolved || player == null || player.IsDead) return;
         if (enemyData.enemyType != EnemyType.Shooter || weaponView == null) return;
 
         Vector3 direction = TargetPosition - weaponView.FirePosition;
@@ -118,7 +120,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private void OnTriggerStay(Collider other)
     {
         if (other.isTrigger) return;
-        if (IsDead || player == null || player.IsDead) return;
+        if (IsDead || IsResolved || player == null || player.IsDead) return;
         if (enemyData.enemyType != EnemyType.Normal && enemyData.enemyType != EnemyType.Kamikaze) return;
         if (Time.time < nextAttackTime) return;
         if (other.GetComponentInParent<PlayerHealth>() != player) return;
@@ -154,14 +156,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
-        if (IsDead || amount <= 0f) return;
+        if (IsDead || IsResolved || amount <= 0f) return;
 
         currentHealth = Mathf.Max(0f, currentHealth - amount);
         if (IsDead)
         {
-            NotifyRemoved();
+            Resolve();
             OnEnemyDied?.Invoke(enemyData);
-            Destroy(gameObject);
         }
     }
 }

@@ -12,6 +12,8 @@ public class EncounterController : MonoBehaviour
     [SerializeField] private EncounterState state;
     [SerializeField] private int pendingSpawns;
     [SerializeField] private int activeEnemyCount;
+    [InspectorName("Enemigos resueltos")]
+    [SerializeField] private int resolvedEnemyCount;
 
     private readonly HashSet<Enemy> activeEnemies = new HashSet<Enemy>();
     private AutomaticMovementVR pausedMovement;
@@ -19,12 +21,14 @@ public class EncounterController : MonoBehaviour
     public EncounterState State => state;
     public int PendingSpawns => pendingSpawns;
     public int ActiveEnemyCount => activeEnemyCount;
+    public int ResolvedEnemyCount => resolvedEnemyCount;
 
     private void Awake()
     {
         state = EncounterState.Waiting;
         pendingSpawns = 0;
         activeEnemyCount = 0;
+        resolvedEnemyCount = 0;
     }
 
     public void TryBegin(PlayerHealth player)
@@ -68,7 +72,7 @@ public class EncounterController : MonoBehaviour
         if (enemy != null)
         {
             activeEnemies.Add(enemy);
-            enemy.Removed += HandleEnemyRemoved;
+            enemy.Resolved += HandleEnemyResolved;
             activeEnemyCount = activeEnemies.Count;
         }
 
@@ -76,11 +80,26 @@ public class EncounterController : MonoBehaviour
         TryComplete();
     }
 
-    private void HandleEnemyRemoved(Enemy enemy)
+    private void HandleEnemyResolved(Enemy enemy)
     {
         if (!activeEnemies.Remove(enemy)) return;
-        enemy.Removed -= HandleEnemyRemoved;
+        enemy.Resolved -= HandleEnemyResolved;
+        resolvedEnemyCount++;
         activeEnemyCount = activeEnemies.Count;
+        TryComplete();
+    }
+
+    public void ResolveRemainingEnemies()
+    {
+        if (!isActiveAndEnabled || stopPlayerDuringEncounter || state != EncounterState.Running) return;
+
+        StopAllCoroutines();
+        pendingSpawns = 0;
+
+        foreach (Enemy enemy in new List<Enemy>(activeEnemies))
+        {
+            if (enemy != null) enemy.Resolve();
+        }
         TryComplete();
     }
 
@@ -104,7 +123,7 @@ public class EncounterController : MonoBehaviour
         if (state == EncounterState.Running) state = EncounterState.Cancelled;
         foreach (Enemy enemy in activeEnemies)
         {
-            if (enemy != null) enemy.Removed -= HandleEnemyRemoved;
+            if (enemy != null) enemy.Resolved -= HandleEnemyResolved;
         }
         activeEnemies.Clear();
         activeEnemyCount = 0;
