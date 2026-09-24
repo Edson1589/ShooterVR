@@ -19,6 +19,7 @@ public class EncounterController : MonoBehaviour
     private AutomaticMovementVR pausedMovement;
 
     public EncounterState State => state;
+    public bool StopsPlayerDuringEncounter => stopPlayerDuringEncounter;
     public int PendingSpawns => pendingSpawns;
     public int ActiveEnemyCount => activeEnemyCount;
     public int ResolvedEnemyCount => resolvedEnemyCount;

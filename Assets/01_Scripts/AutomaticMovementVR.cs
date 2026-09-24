@@ -25,6 +25,7 @@ public class AutomaticMovementVR : MonoBehaviour
     private readonly HashSet<Object> pauseOwners = new HashSet<Object>();
 
     public bool IsMovementPaused => pauseOwners.Count > 0;
+    public bool HasCompletedPath => waypoints.Count > 0 && currentWaypointIndex >= waypoints.Count;
 
     private void Awake()
     {
