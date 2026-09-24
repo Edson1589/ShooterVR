@@ -22,6 +22,10 @@ public class AutomaticMovementVR : MonoBehaviour
     private CharacterController characterController;
     private int currentWaypointIndex;
     private bool isMovementActive;
+    private readonly HashSet<Object> pauseOwners = new HashSet<Object>();
+
+    public bool IsMovementPaused => pauseOwners.Count > 0;
+    public bool HasCompletedPath => waypoints.Count > 0 && currentWaypointIndex >= waypoints.Count;
 
     private void Awake()
     {
@@ -35,7 +39,7 @@ public class AutomaticMovementVR : MonoBehaviour
 
     private void Update()
     {
-        if (!isMovementActive || waypoints.Count == 0)
+        if (!isMovementActive || IsMovementPaused || currentWaypointIndex >= waypoints.Count)
         {
             return;
         }
@@ -89,6 +93,16 @@ public class AutomaticMovementVR : MonoBehaviour
         isMovementActive = false;
     }
 
+    public void PauseMovement(Object owner)
+    {
+        if (owner != null) pauseOwners.Add(owner);
+    }
+
+    public void ResumeMovement(Object owner)
+    {
+        if (owner != null) pauseOwners.Remove(owner);
+    }
+
     /// <summary>Resumes or starts automatic movement from the current waypoint.</summary>
     public void ResumeMovement()
     {
@@ -98,7 +112,7 @@ public class AutomaticMovementVR : MonoBehaviour
             return;
         }
 
-        isMovementActive = true;
+        isMovementActive = currentWaypointIndex < waypoints.Count;
     }
 
     private void OnDrawGizmosSelected()

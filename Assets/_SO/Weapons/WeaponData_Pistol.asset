@@ -16,5 +16,5 @@ MonoBehaviour:
   weaponPrefab: {fileID: 3096024554046610633, guid: 5ccde08f2d1a75b4a80b7b0bc3b10816, type: 3}
   bulletData: {fileID: 11400000, guid: 83598f5780798884c96d0683f4f6e029, type: 2}
   fireCooldown: 0.25
-  magazineSize: 12
+  magazineSize: 30
   reloadDuration: 1.2

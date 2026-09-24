@@ -1,8 +1,12 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour, IDamageable
 {
+    public static event Action<EnemyData> OnEnemyDied;
+    public event Action<Enemy> Resolved;
+
     [Header("Configuración")]
     public EnemyData enemyData;
 
@@ -13,11 +17,13 @@ public class Enemy : MonoBehaviour, IDamageable
     private PlayerHealth player;
     private Collider playerCollider;
     private Collider[] enemyColliders;
+    private Vector3 movementDirection;
     private float currentHealth;
     private float nextAttackTime;
 
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
+    public bool IsResolved { get; private set; }
 
     private Vector3 TargetPosition => playerCollider != null ? playerCollider.bounds.center : player.transform.position + Vector3.up;
 
@@ -37,6 +43,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        movementDirection = transform.forward;
+        movementDirection.y = 0f;
+        movementDirection.Normalize();
+
         player = FindAnyObjectByType<PlayerHealth>();
         if (player != null)
         {
@@ -46,9 +56,36 @@ public class Enemy : MonoBehaviour, IDamageable
         nextAttackTime = Time.time + enemyData.attackCooldown;
     }
 
+    private void OnDisable()
+    {
+        NotifyResolved();
+    }
+
+    private void NotifyResolved()
+    {
+        if (IsResolved) return;
+        IsResolved = true;
+        Resolved?.Invoke(this);
+    }
+
+    public void Resolve()
+    {
+        if (IsResolved) return;
+        NotifyResolved();
+        Destroy(gameObject);
+    }
+
     private void FixedUpdate()
     {
-        if (IsDead || player == null || player.IsDead) return;
+        if (IsDead || IsResolved) return;
+
+        if (enemyData.enemyType == EnemyType.Normal)
+        {
+            rb.MovePosition(rb.position + movementDirection * enemyData.moveSpeed * Time.fixedDeltaTime);
+            return;
+        }
+
+        if (player == null || player.IsDead) return;
 
         Vector3 direction = TargetPosition - rb.position;
         direction.y = 0f;
@@ -58,7 +95,7 @@ public class Enemy : MonoBehaviour, IDamageable
             rb.MoveRotation(Quaternion.LookRotation(direction));
         }
 
-        if (enemyData.enemyType != EnemyType.Normal) return;
+        if (enemyData.enemyType != EnemyType.Kamikaze) return;
 
         float distance = direction.magnitude;
         float step = Mathf.Min(enemyData.moveSpeed * Time.fixedDeltaTime, Mathf.Max(0f, distance - enemyData.stoppingDistance));
@@ -67,7 +104,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (IsDead || player == null || player.IsDead) return;
+        if (IsDead || IsResolved || player == null || player.IsDead) return;
         if (enemyData.enemyType != EnemyType.Shooter || weaponView == null) return;
 
         Vector3 direction = TargetPosition - weaponView.FirePosition;
@@ -82,8 +119,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnTriggerStay(Collider other)
     {
-        if (IsDead || player == null || player.IsDead) return;
-        if (enemyData.enemyType != EnemyType.Normal || Time.time < nextAttackTime) return;
+        if (other.isTrigger) return;
+        if (IsDead || IsResolved || player == null || player.IsDead) return;
+        if (enemyData.enemyType != EnemyType.Normal && enemyData.enemyType != EnemyType.Kamikaze) return;
+        if (Time.time < nextAttackTime) return;
         if (other.GetComponentInParent<PlayerHealth>() != player) return;
 
         player.TakeDamage(enemyData.contactDamage);
@@ -117,12 +156,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
-        if (IsDead || amount <= 0f) return;
+        if (IsDead || IsResolved || amount <= 0f) return;
 
         currentHealth = Mathf.Max(0f, currentHealth - amount);
         if (IsDead)
         {
-            Destroy(gameObject);
+            Resolve();
+            OnEnemyDied?.Invoke(enemyData);
         }
     }
 }
