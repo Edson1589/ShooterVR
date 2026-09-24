@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyType: 1
   maxHealth: 40
-  attackCooldown: 1.8
+  attackCooldown: 0.3
   moveSpeed: 0
   stoppingDistance: 0.65
   contactDamage: 10
   bulletData: {fileID: 11400000, guid: ce33a426cb8ae63448d9235f54f66166, type: 2}
+  scoreValue: 10
