@@ -989,7 +989,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -1012,11 +1018,11 @@ PlayerSettings:
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 14213ec4-3b7f-475c-babf-f1ee0ebb3085
+  cloudProjectId: 5d00f64c-c82f-47bc-b6a5-6ed09086d4c9
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: ShooterVR
-  organizationId: ecayo507
+  organizationId: cayoali22
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
