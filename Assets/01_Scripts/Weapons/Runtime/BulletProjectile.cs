@@ -5,7 +5,17 @@ public class BulletProjectile : MonoBehaviour
     private Rigidbody rb;
     private BulletData bulletData;
     private bool initialized;
+    private bool firedByEnemy;
     private GameObject activeTrail;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void ConfigureEnemyProjectileCollisions()
+    {
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        int projectileLayer = LayerMask.NameToLayer("EnemyProjectile");
+        if (enemyLayer >= 0 && projectileLayer >= 0)
+            Physics.IgnoreLayerCollision(enemyLayer, projectileLayer, true);
+    }
 
     private void Awake()
     {
@@ -13,7 +23,7 @@ public class BulletProjectile : MonoBehaviour
     }
 
     // Configura y lanza el proyectil.
-    public void Initialize(BulletData data, Vector3 direction)
+    public void Initialize(BulletData data, Vector3 direction, bool firedByEnemy = false)
     {
         if (data == null)
         {
@@ -27,6 +37,17 @@ public class BulletProjectile : MonoBehaviour
         }
 
         bulletData = data;
+        this.firedByEnemy = firedByEnemy;
+        if (firedByEnemy)
+        {
+            int layer = LayerMask.NameToLayer("EnemyProjectile");
+            if (layer >= 0)
+            {
+                gameObject.layer = layer;
+                foreach (Collider projectileCollider in GetComponentsInChildren<Collider>(true))
+                    projectileCollider.gameObject.layer = layer;
+            }
+        }
         initialized = true;
 
         Vector3 moveDir = direction.normalized;
@@ -56,6 +77,11 @@ public class BulletProjectile : MonoBehaviour
 
         // El collider puede estar en un hijo mientras que el componente que recibe daño se encuentra en el objeto padre.
         IDamageable damageable = collision.collider.GetComponentInParent<IDamageable>();
+        if (firedByEnemy)
+        {
+            // Enemy layers pass through each other; only the player receives enemy bullet damage.
+            damageable = collision.collider.GetComponentInParent<PlayerHealth>();
+        }
 
         if (damageable != null)
         {

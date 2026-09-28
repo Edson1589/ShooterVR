@@ -27,6 +27,7 @@ public class EncounterController : MonoBehaviour
     public int PendingSpawns => pendingSpawns;
     public int ActiveEnemyCount => activeEnemyCount;
     public int ResolvedEnemyCount => resolvedEnemyCount;
+    public int PlannedEnemyCount => spawnPoints.Length;
 
     private void Awake()
     {

@@ -17,10 +17,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private UnityEvent onGameCompleted = new UnityEvent();
     [InspectorName("Nivel completado")]
     [SerializeField] private bool levelCompleted;
+    [SerializeField] private GameOverManager completionScreen;
 
     private readonly List<EncounterController> requiredEncounters = new List<EncounterController>();
     private PlayerHealth player;
     private int nextSceneBuildIndex;
+    private bool reachedExit;
 
     public bool IsLevelCompleted => levelCompleted;
     public bool IsGameCompleted => isFinalLevel && levelCompleted;
@@ -28,6 +30,7 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         levelCompleted = false;
+        reachedExit = false;
         player = playerMovement != null ? playerMovement.GetComponent<PlayerHealth>() : null;
         if (player == null || player.gameObject.scene != gameObject.scene)
         {
@@ -44,7 +47,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        if (isFinalLevel) return;
+        if (isFinalLevel || completionScreen != null) return;
         nextSceneBuildIndex = string.IsNullOrWhiteSpace(nextScenePath) ? -1 : SceneUtility.GetBuildIndexByScenePath(nextScenePath);
         if (nextSceneBuildIndex < 0)
         {
@@ -53,10 +56,26 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!levelCompleted && playerMovement != null && (reachedExit || playerMovement.HasCompletedPath))
+            TryCompleteLevel(player);
+    }
+
+    public void ReachExit(PlayerHealth enteringPlayer)
+    {
+        if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null
+            || enteringPlayer != player || player.IsDead) return;
+
+        // Entering the finish volume is sufficient; reaching its exact centre is not required.
+        reachedExit = true;
+        TryCompleteLevel(enteringPlayer);
+    }
+
     public bool TryCompleteLevel(PlayerHealth enteringPlayer)
     {
         if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null || enteringPlayer != player || player.IsDead) return false;
-        if (!playerMovement.HasCompletedPath || playerMovement.IsMovementPaused) return false;
+        if ((!reachedExit && !playerMovement.HasCompletedPath) || playerMovement.IsMovementPaused) return false;
 
         foreach (EncounterController encounter in requiredEncounters)
         {
@@ -65,6 +84,12 @@ public class LevelManager : MonoBehaviour
 
         levelCompleted = true;
         playerMovement.StopMovement();
+        if (completionScreen != null)
+        {
+            completionScreen.ShowVictory();
+            if (isFinalLevel) onGameCompleted.Invoke();
+            return true;
+        }
         if (isFinalLevel)
         {
             onGameCompleted.Invoke();

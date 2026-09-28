@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private CapsuleCollider bodyCollider;
     private Vector3 visualRestPosition;
     private Quaternion visualRestRotation;
+    private EnemyLocomotionAnimation locomotionAnimation;
 
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
@@ -42,7 +43,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        enemyColliders = GetComponentsInChildren<Collider>();
+        enemyColliders = GetComponentsInChildren<Collider>(true);
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer >= 0)
+        {
+            gameObject.layer = enemyLayer;
+            foreach (Collider enemyCollider in enemyColliders)
+                enemyCollider.gameObject.layer = enemyLayer;
+        }
 
         if (enemyData == null)
         {
@@ -51,6 +59,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         currentHealth = enemyData.maxHealth;
+        locomotionAnimation = GetComponentInChildren<EnemyLocomotionAnimation>();
         if (enemyData.enemyType == EnemyType.Shooter && weaponView == null)
         {
             weaponView = GetComponentInChildren<WeaponView>();
@@ -141,6 +150,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         if (enemyData.enemyType != EnemyType.Kamikaze) return;
+        if (locomotionAnimation != null && (locomotionAnimation.IsAttacking || IsInMeleeRange)) return;
 
         float distance = direction.magnitude;
         float step = Mathf.Min(enemyData.moveSpeed * Time.fixedDeltaTime, Mathf.Max(0f, distance - enemyData.stoppingDistance));
@@ -207,9 +217,31 @@ public class Enemy : MonoBehaviour, IDamageable
         if (other.isTrigger) return;
         if (IsDead || IsResolved || player == null || player.IsDead) return;
         if (enemyData.enemyType != EnemyType.Normal && enemyData.enemyType != EnemyType.Kamikaze) return;
+        if (enemyData.enemyType == EnemyType.Kamikaze && locomotionAnimation != null) return;
         if (Time.time < nextAttackTime) return;
         if (other.GetComponentInParent<PlayerHealth>() != player) return;
 
+        player.TakeDamage(enemyData.contactDamage);
+        nextAttackTime = Time.time + enemyData.attackCooldown;
+    }
+
+    public bool IsInMeleeRange => IsWithinMeleeRange(0f);
+    public bool CanContinueMeleeAttack => IsWithinMeleeRange(0.2f);
+
+    private bool IsWithinMeleeRange(float margin)
+    {
+        if (!isActiveAndEnabled || IsDead || IsResolved || player == null || player.IsDead
+            || enemyData.enemyType != EnemyType.Kamikaze) return false;
+        Vector3 offset = TargetPosition - transform.position;
+        if (Mathf.Abs(offset.y) > 1.2f) return false;
+        offset.y = 0f;
+        float range = Mathf.Max(0.8f, enemyData.stoppingDistance) + 0.15f + margin;
+        return offset.sqrMagnitude <= range * range;
+    }
+
+    public void ApplyAnimatedMeleeHit()
+    {
+        if (locomotionAnimation == null || !IsInMeleeRange || Time.time < nextAttackTime) return;
         player.TakeDamage(enemyData.contactDamage);
         nextAttackTime = Time.time + enemyData.attackCooldown;
     }
@@ -236,7 +268,7 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
 
-        projectile.Initialize(bulletData, direction);
+        projectile.Initialize(bulletData, direction, firedByEnemy: true);
     }
 
     public void TakeDamage(float amount)

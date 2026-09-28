@@ -18,21 +18,50 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private Behaviour[] gameplayToDisable = new Behaviour[0];
     [SerializeField] private string mainMenuScenePath = "Assets/00_Scenes/MainMenu.unity";
+    [Header("Victoria")]
+    [SerializeField] private GameObject victoryPanel;
+    [SerializeField] private TMP_Text victoryScoreText;
+    [SerializeField] private TMP_Text victoryEnemiesText;
+    [Header("Tiempo del nivel")]
+    [SerializeField] private TMP_Text gameOverTimeText;
+    [SerializeField] private TMP_Text victoryTimeText;
+    private double levelStartedAt;
     private bool shown;
     private bool loading;
     private float previousTimeScale = 1f;
 
     private void Awake()
     {
+        levelStartedAt = Time.timeAsDouble;
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
     }
 
     public void ShowGameOver()
     {
         if (shown || gameOverPanel == null || playerCamera == null) return;
-        shown = true;
-        previousTimeScale = Time.timeScale;
         if (scoreText != null) scoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
+        ShowResult(gameOverPanel);
+    }
+
+    public void ShowVictory()
+    {
+        if (shown || victoryPanel == null || playerCamera == null) return;
+        if (victoryScoreText != null)
+            victoryScoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
+        if (victoryEnemiesText != null)
+            victoryEnemiesText.text = $"Enemigos eliminados: {(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
+        ShowResult(victoryPanel);
+    }
+
+    private void ShowResult(GameObject resultPanel)
+    {
+        shown = true;
+        int seconds = (int)System.Math.Max(0d, System.Math.Floor(Time.timeAsDouble - levelStartedAt));
+        string elapsed = $"Tiempo: {seconds / 60:00}:{seconds % 60:00}";
+        if (gameOverTimeText != null) gameOverTimeText.text = elapsed;
+        if (victoryTimeText != null) victoryTimeText.text = elapsed;
+        previousTimeScale = Time.timeScale;
         if (scoreManager != null) scoreManager.enabled = false;
         foreach (Behaviour behaviour in gameplayToDisable)
             if (behaviour != null) behaviour.enabled = false;
@@ -44,8 +73,8 @@ public class GameOverManager : MonoBehaviour
         Vector3 forward = Vector3.ProjectOnPlane(playerCamera.forward, Vector3.up);
         if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
         forward.Normalize();
-        gameOverPanel.transform.SetPositionAndRotation(playerCamera.position + forward * 2f, Quaternion.LookRotation(forward));
-        gameOverPanel.SetActive(true);
+        resultPanel.transform.SetPositionAndRotation(playerCamera.position + forward * 2f, Quaternion.LookRotation(forward));
+        resultPanel.SetActive(true);
         Time.timeScale = 0f;
     }
 

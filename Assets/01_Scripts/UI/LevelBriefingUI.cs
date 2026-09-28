@@ -12,6 +12,8 @@ public class LevelBriefingUI : MonoBehaviour
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text bodyText;
     [SerializeField] private TMP_Text countdownText;
+    [Tooltip("Objetos decorativos del briefing completo que se ocultan en modo advertencia compacta.")]
+    [SerializeField] private GameObject[] fullBriefingOnlyObjects;
     [SerializeField] private bool showIntroduction = true;
     [SerializeField] private bool showFirstAmbushPanel = true;
     [Min(1f)] [SerializeField] private float introductionDuration = 14f;
@@ -101,6 +103,14 @@ public class LevelBriefingUI : MonoBehaviour
         {
             countdownText.gameObject.SetActive(!compact);
             countdownText.rectTransform.anchoredPosition = fullCountdownPosition;
+        }
+        if (fullBriefingOnlyObjects != null)
+        {
+            for (int i = 0; i < fullBriefingOnlyObjects.Length; i++)
+            {
+                if (fullBriefingOnlyObjects[i] != null)
+                    fullBriefingOnlyObjects[i].SetActive(!compact);
+            }
         }
     }
 

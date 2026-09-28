@@ -35,7 +35,7 @@ public class EndLevelTrigger : MonoBehaviour
     {
         if (!isActiveAndEnabled || other.isTrigger || levelManager == null || levelManager.IsLevelCompleted) return;
         PlayerHealth player = other.GetComponentInParent<PlayerHealth>();
-        if (player != null) levelManager.TryCompleteLevel(player);
+        if (player != null) levelManager.ReachExit(player);
     }
 
     private void OnDrawGizmosSelected()

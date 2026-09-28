@@ -17,8 +17,22 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private ScoreChangedEvent onScoreChanged;
 
     private int currentScore;
+    private int defeatedEnemies;
+    private int totalEnemies;
 
     public int CurrentScore => currentScore;
+    public int DefeatedEnemies => defeatedEnemies;
+    public int TotalEnemies => totalEnemies;
+
+    private void Awake()
+    {
+        foreach (GameObject root in gameObject.scene.GetRootGameObjects())
+        {
+            totalEnemies += root.GetComponentsInChildren<Enemy>().Length;
+            foreach (EncounterController encounter in root.GetComponentsInChildren<EncounterController>())
+                totalEnemies += encounter.PlannedEnemyCount;
+        }
+    }
 
     private void OnEnable()
     {
@@ -37,6 +51,7 @@ public class ScoreManager : MonoBehaviour
 
     private void HandleEnemyDied(EnemyData enemyData)
     {
+        defeatedEnemies++;
         currentScore += enemyData.scoreValue;
         onScoreChanged?.Invoke(currentScore);
     }
