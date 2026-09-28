@@ -20,3 +20,6 @@ MonoBehaviour:
   contactDamage: 10
   bulletData: {fileID: 11400000, guid: ce33a426cb8ae63448d9235f54f66166, type: 2}
   scoreValue: 10
+  hitEffectPrefab: {fileID: 5445336559609952028, guid: 7c1a09fe4720fc54d9cd75a94e29edb2, type: 3}
+  deathEffectPrefab: {fileID: 7412521699938713590, guid: 9aaf8465288307448b737ed3acb8c238, type: 3}
+  spawnEffectPrefab: {fileID: 5220132721113178015, guid: 27b62e489a813114da9c590fa1f067ad, type: 3}

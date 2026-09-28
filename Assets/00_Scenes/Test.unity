@@ -1598,6 +1598,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4883351507195683667, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 402740595}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1685,9 +1689,12 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
   onPlayerDied:
     m_PersistentCalls:
       m_Calls:
@@ -6120,6 +6127,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
   gameOverPanel: {fileID: 1188441551}
+  playerCamera: {fileID: 0}
+  player: {fileID: 0}
+  scoreManager: {fileID: 0}
+  scoreText: {fileID: 0}
+  gameplayToDisable: []
+  mainMenuScenePath: Assets/00_Scenes/MainMenu.unity
+  victoryPanel: {fileID: 0}
+  victoryScoreText: {fileID: 0}
+  victoryEnemiesText: {fileID: 0}
+  gameOverTimeText: {fileID: 0}
+  victoryTimeText: {fileID: 0}
 --- !u!114 &1646706254
 MonoBehaviour:
   m_ObjectHideFlags: 0

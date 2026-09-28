@@ -19,3 +19,7 @@ MonoBehaviour:
   stoppingDistance: 0.65
   contactDamage: 10
   bulletData: {fileID: 0}
+  scoreValue: 10
+  hitEffectPrefab: {fileID: 7629920231516843979, guid: add14e05dd96b01419d12cbd1978c877, type: 3}
+  deathEffectPrefab: {fileID: 1892318604094699764, guid: a45be98aba1105a4385a101b491cc0c0, type: 3}
+  spawnEffectPrefab: {fileID: 5229263455334344742, guid: 65312dd95bbea6f48a3befa05f83a07e, type: 3}

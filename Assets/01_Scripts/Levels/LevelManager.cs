@@ -72,6 +72,14 @@ public class LevelManager : MonoBehaviour
         TryCompleteLevel(enteringPlayer);
     }
 
+    public void GoToNextLevel()
+    {
+        if (!levelCompleted || isFinalLevel || completionScreen == null
+            || string.IsNullOrWhiteSpace(nextScenePath)) return;
+
+        completionScreen.LoadNextLevel(nextScenePath);
+    }
+
     public bool TryCompleteLevel(PlayerHealth enteringPlayer)
     {
         if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null || enteringPlayer != player || player.IsDead) return false;

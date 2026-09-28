@@ -32,4 +32,14 @@ public class EnemyData : ScriptableObject
 
     [Header("Puntuación")]
     public int scoreValue = 10;
+
+    [Header("Efectos visuales")]
+    [Tooltip("Efecto al recibir daño.")]
+    public GameObject hitEffectPrefab;
+
+    [Tooltip("Efecto al morir.")]
+    public GameObject deathEffectPrefab;
+
+    [Tooltip("Efecto al aparecer.")]
+    public GameObject spawnEffectPrefab;
 }

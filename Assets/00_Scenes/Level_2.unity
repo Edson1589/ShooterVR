@@ -22414,10 +22414,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 384007018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.5, y: 0}
-  m_SizeDelta: {x: -61, y: -30}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 836, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &82723361
 CanvasRenderer:
@@ -22452,8 +22452,8 @@ MonoBehaviour:
     El avance es autom\xE1tico. En las paradas, elimina a todos los enemigos para
     continuar."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
-  m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 94be3668c4916ac429eb9b0b166daf47, type: 2}
+  m_sharedMaterial: {fileID: 2696955329812675742, guid: 94be3668c4916ac429eb9b0b166daf47, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -22477,26 +22477,26 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
+  m_fontSize: 30
   m_fontSizeBase: 25
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 27
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: 22
+  m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 0
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -52480,8 +52480,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "PREP\xC1RATE PARA EL COMBATE"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
-  m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bcc2d78088ece874c812da4754258d81, type: 2}
+  m_sharedMaterial: {fileID: 1104894853711716264, guid: bcc2d78088ece874c812da4754258d81, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -52505,13 +52505,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44
+  m_fontSize: 46
   m_fontSizeBase: 44
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
-  m_fontStyle: 1
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 36
+  m_fontSizeMax: 46
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -52524,7 +52524,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -145969,6 +145969,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4883351507195683667, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 644845862}
     - target: {fileID: 5826056641483426609, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -146049,6 +146053,9 @@ MonoBehaviour:
   hapticAmplitude: 0.5
   hapticDuration: 0.15
   onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamageTaken:
     m_PersistentCalls:
       m_Calls: []
   onPlayerDied:
@@ -261397,7 +261404,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -225}
-  m_SizeDelta: {x: 680, y: 56}
+  m_SizeDelta: {x: 850, y: 56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1282099978
 GameObject:
@@ -280855,8 +280862,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "// PROTOCOLO OPERATIVO // DIRECTIVA DE MISI\xD3N VR"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
-  m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 94be3668c4916ac429eb9b0b166daf47, type: 2}
+  m_sharedMaterial: {fileID: 2696955329812675742, guid: 94be3668c4916ac429eb9b0b166daf47, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -280880,13 +280887,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
+  m_fontSize: 18
   m_fontSizeBase: 13
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
-  m_fontStyle: 1
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16
+  m_fontSizeMax: 18
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -280899,7 +280906,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -336563,10 +336570,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1281723108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 816, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1663700223
 CanvasRenderer:
@@ -336598,8 +336605,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: El recorrido comienza en 14 s
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
-  m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0df6e217a99f8d346a4a24a2c1a4da54, type: 2}
+  m_sharedMaterial: {fileID: 7524322852116434942, guid: 0df6e217a99f8d346a4a24a2c1a4da54, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -336623,13 +336630,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 28
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
-  m_fontStyle: 1
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 23
+  m_fontSizeMax: 28
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -336642,7 +336649,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -388759,6 +388766,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 846201907572689005, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
+      propertyPath: m_text
+      value: NIVEL COMPLETADO
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511533333804124603, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
+      propertyPath: m_text
+      value: VOLVER AL CENTRO DE OPERACIONES
+      objectReference: {fileID: 0}
+    - target: {fileID: 1525851080011261208, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
+      propertyPath: m_text
+      value: "HAS COMPLETADO EL \xDALTIMO NIVEL"
+      objectReference: {fileID: 0}
     - target: {fileID: 2057562595109419557, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
       propertyPath: m_Camera
       value: 
@@ -388831,6 +388850,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameOverCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5993575017129023186, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
+      propertyPath: m_text
+      value: "MEN\xDA PRINCIPAL"
+      objectReference: {fileID: 0}
     - target: {fileID: 6314081118805123139, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -388869,6 +388892,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6314081118805123139, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8064456869266580150, guid: c40503f42fa5810499f7df4d38bb43f1, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

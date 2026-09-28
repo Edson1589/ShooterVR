@@ -14,6 +14,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [Serializable]
     public class HealthChangedEvent : UnityEvent<float> { }
 
+    [Serializable]
+    public class DamageTakenEvent : UnityEvent<float> { }
+
     [Header("Health Settings")]
     [Tooltip("Maximum health value.")]
     [SerializeField] private float maxHealth = 100f;
@@ -32,8 +35,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [Tooltip("Invoked whenever health changes, passing the new current health.")]
     [SerializeField] private HealthChangedEvent onHealthChanged;
 
+    [SerializeField] private DamageTakenEvent onDamageTaken = new DamageTakenEvent();
+
     [Tooltip("Invoked once when health reaches 0.")]
     [SerializeField] private UnityEvent onPlayerDied;
+
+    public DamageTakenEvent OnDamageTaken => onDamageTaken;
 
     private float currentHealth;
     private float invulnerableUntilTime;
@@ -63,6 +70,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         onHealthChanged?.Invoke(currentHealth);
+        onDamageTaken?.Invoke(amount);
         TriggerDamageHaptics();
 
         if (IsDead)

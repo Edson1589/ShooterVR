@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletName: Bala de pistola
   speed: 25
   lifetime: 3
-  damage: 1000
+  damage: 10
   projectilePrefab: {fileID: 8566862340241086330, guid: 141a2b691f09e204b8f03e5b055d9378, type: 3}
   trailEffectPrefab: {fileID: 1391366374355100310, guid: d34e91d8e48284b4ba14fa0f1a6c104f, type: 3}
   shootEffectPrefab: {fileID: 1135749811845299359, guid: dae9f1a19862e9d42aa5c184f559dc05, type: 3}

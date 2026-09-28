@@ -88,6 +88,12 @@ public class GameOverManager : MonoBehaviour
         LoadScene(mainMenuScenePath);
     }
 
+    public void LoadNextLevel(string scenePath)
+    {
+        if (victoryPanel == null || !victoryPanel.activeInHierarchy) return;
+        LoadScene(scenePath);
+    }
+
     private void LoadScene(string path)
     {
         if (!shown || loading) return;

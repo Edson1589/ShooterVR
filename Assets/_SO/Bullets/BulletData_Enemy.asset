@@ -15,8 +15,8 @@ MonoBehaviour:
   bulletName: Bala del enemigo tirador
   speed: 8
   lifetime: 5
-  damage: 10
+  damage: 20
   projectilePrefab: {fileID: 645309155043134879, guid: 77f037d58a67dfb4d896c5754027f87a, type: 3}
-  trailEffectPrefab: {fileID: 1391366374355100310, guid: dde4a012cd48de64c855d37c9405df54, type: 3}
-  shootEffectPrefab: {fileID: 1135749811845299359, guid: b9b749efa1492bb4ca4768ec8cb8d537, type: 3}
-  impactEffectPrefab: {fileID: 3837150254769955857, guid: cf6f10a9dd1da174e8cfb2b281283600, type: 3}
+  trailEffectPrefab: {fileID: 2719657654010516948, guid: c413a238b99a4b7449bef1c3cd7d7e6d, type: 3}
+  shootEffectPrefab: {fileID: 6712576971313013708, guid: fb7eab3a928100140b423cb279741834, type: 3}
+  impactEffectPrefab: {fileID: 5686842434377798975, guid: 4bd4ab35daaa3d941819bc2e4cb63197, type: 3}
