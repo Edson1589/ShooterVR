@@ -13,6 +13,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Arma del tirador")]
     public WeaponView weaponView;
 
+    [Header("Apoyo del modelo del tirador")]
+    [Tooltip("Distancia vertical desde el hueso del pie hasta la suela, en unidades del enemigo.")]
+    [Min(0f)] [SerializeField] private float footSoleOffset = 0.08f;
+
     private Rigidbody rb;
     private PlayerHealth player;
     private Collider playerCollider;
@@ -20,6 +24,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private Vector3 movementDirection;
     private float currentHealth;
     private float nextAttackTime;
+    private Transform shooterVisual;
+    private Transform shooterHead;
+    private Transform shooterHand;
+    private Transform shooterLeftFoot;
+    private Transform shooterRightFoot;
+    private CapsuleCollider bodyCollider;
+    private Vector3 visualRestPosition;
+    private Quaternion visualRestRotation;
 
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
@@ -39,6 +51,28 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         currentHealth = enemyData.maxHealth;
+        if (enemyData.enemyType == EnemyType.Shooter && weaponView == null)
+        {
+            weaponView = GetComponentInChildren<WeaponView>();
+        }
+        if (enemyData.enemyType == EnemyType.Shooter)
+        {
+            Animator animator = GetComponentInChildren<Animator>();
+            if (animator != null && animator.isHuman && animator.avatar != null && animator.avatar.isValid)
+            {
+                shooterVisual = animator.transform != transform ? animator.transform : null;
+                shooterHead = animator.GetBoneTransform(HumanBodyBones.Head);
+                shooterHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+                shooterLeftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+                shooterRightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+                bodyCollider = GetComponent<CapsuleCollider>();
+                if (shooterVisual != null)
+                {
+                    visualRestRotation = shooterVisual.localRotation;
+                    visualRestPosition = shooterVisual.localPosition;
+                }
+            }
+        }
     }
 
     private void Start()
@@ -51,6 +85,17 @@ public class Enemy : MonoBehaviour, IDamageable
         if (player != null)
         {
             playerCollider = player.GetComponent<Collider>();
+            if (enemyData.enemyType == EnemyType.Shooter)
+            {
+                Vector3 facing = TargetPosition - transform.position;
+                facing.y = 0f;
+                if (facing.sqrMagnitude > 0.001f)
+                {
+                    Quaternion rotation = Quaternion.LookRotation(facing);
+                    rb.rotation = rotation;
+                    transform.rotation = rotation;
+                }
+            }
         }
 
         nextAttackTime = Time.time + enemyData.attackCooldown;
@@ -102,19 +147,59 @@ public class Enemy : MonoBehaviour, IDamageable
         rb.MovePosition(rb.position + direction.normalized * step);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (IsDead || IsResolved || player == null || player.IsDead) return;
-        if (enemyData.enemyType != EnemyType.Shooter || weaponView == null) return;
+        if (IsDead || IsResolved) return;
+        if (enemyData.enemyType != EnemyType.Shooter) return;
+
+        GroundShooterVisual();
+        if (player == null || player.IsDead) return;
+        AlignShooterVisual();
+        if (weaponView == null || !weaponView.HasFirePoint) return;
 
         Vector3 direction = TargetPosition - weaponView.FirePosition;
         if (direction.sqrMagnitude < 0.001f) return;
 
-        weaponView.transform.rotation = Quaternion.LookRotation(direction);
+        // Rotate the gripping hand with its weapon instead of twisting the gun out of the grip.
+        Transform aimPivot = shooterHand != null && weaponView.transform.IsChildOf(shooterHand)
+            ? shooterHand : weaponView.transform;
+        aimPivot.rotation = Quaternion.FromToRotation(weaponView.FireDirection, direction) * aimPivot.rotation;
         if (Time.time < nextAttackTime) return;
 
         FireProjectile();
         nextAttackTime = Time.time + enemyData.attackCooldown;
+    }
+
+    private void GroundShooterVisual()
+    {
+        if (shooterVisual == null || bodyCollider == null || !bodyCollider.enabled
+            || shooterLeftFoot == null || shooterRightFoot == null) return;
+
+        // Use the animated feet rather than mesh bounds to place the lower sole
+        // on the capsule base, without moving the physics body or accumulating offsets.
+        shooterVisual.localPosition = visualRestPosition;
+        float soleY = Mathf.Min(shooterLeftFoot.position.y, shooterRightFoot.position.y)
+            - footSoleOffset * Mathf.Abs(transform.lossyScale.y);
+        shooterVisual.position += Vector3.up * (bodyCollider.bounds.min.y - soleY);
+    }
+
+    private void AlignShooterVisual()
+    {
+        if (shooterHead == null) return;
+        if (shooterVisual != null)
+        {
+            // The clip turns the torso independently of the physics root. Correct its visual yaw
+            // from the current animated pose without accumulating rotation between frames.
+            shooterVisual.localRotation = visualRestRotation;
+            Vector3 forward = Vector3.ProjectOnPlane(shooterHead.forward, Vector3.up);
+            Vector3 target = Vector3.ProjectOnPlane(TargetPosition - shooterHead.position, Vector3.up);
+            if (forward.sqrMagnitude > 0.001f && target.sqrMagnitude > 0.001f)
+                shooterVisual.rotation = Quaternion.FromToRotation(forward, target) * shooterVisual.rotation;
+        }
+
+        Vector3 lookDirection = TargetPosition - shooterHead.position;
+        if (lookDirection.sqrMagnitude > 0.001f)
+            shooterHead.rotation = Quaternion.FromToRotation(shooterHead.forward, lookDirection) * shooterHead.rotation;
     }
 
     private void OnTriggerStay(Collider other)

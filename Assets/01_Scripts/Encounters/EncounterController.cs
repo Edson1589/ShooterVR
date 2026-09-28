@@ -9,6 +9,10 @@ public class EncounterController : MonoBehaviour
 
     [SerializeField] private bool stopPlayerDuringEncounter = true;
     [SerializeField] private EnemySpawnPoint[] spawnPoints = new EnemySpawnPoint[0];
+    [Header("Aviso previo (opcional)")]
+    [SerializeField] private LevelBriefingUI briefing;
+    [TextArea] [SerializeField] private string warningMessage;
+    [Min(0f)] [SerializeField] private float warningDuration;
     [SerializeField] private EncounterState state;
     [SerializeField] private int pendingSpawns;
     [SerializeField] private int activeEnemyCount;
@@ -58,6 +62,18 @@ public class EncounterController : MonoBehaviour
 
         state = EncounterState.Running;
         pendingSpawns = spawnPoints.Length;
+        StartCoroutine(BeginSpawns());
+    }
+
+    private IEnumerator BeginSpawns()
+    {
+        if (briefing != null && warningDuration > 0f && !string.IsNullOrWhiteSpace(warningMessage))
+        {
+            briefing.ShowAmbushWarning(this, "¡EMBOSCADA!", warningMessage, warningDuration);
+            yield return new WaitForSeconds(warningDuration);
+            briefing.HideMessage(this);
+        }
+
         foreach (EnemySpawnPoint point in spawnPoints)
         {
             StartCoroutine(SpawnAfterDelay(point));
@@ -121,6 +137,7 @@ public class EncounterController : MonoBehaviour
     private void OnDisable()
     {
         StopAllCoroutines();
+        if (briefing != null) briefing.HideMessage(this);
         if (state == EncounterState.Running) state = EncounterState.Cancelled;
         foreach (Enemy enemy in activeEnemies)
         {
