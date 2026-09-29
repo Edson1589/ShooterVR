@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class EnemyDespawnZone : MonoBehaviour
 {
+    [Tooltip("Opcional: limita esta salida al enemigo de un punto de aparición.")]
+    public EnemySpawnPoint spawnPoint;
+
     private void Reset()
     {
         GetComponent<BoxCollider>().isTrigger = true;
@@ -16,7 +19,7 @@ public class EnemyDespawnZone : MonoBehaviour
     {
         if (!isActiveAndEnabled || other.isTrigger) return;
         Enemy enemy = other.GetComponentInParent<Enemy>();
-        if (enemy != null) enemy.Resolve();
+        if (enemy != null && (spawnPoint == null || spawnPoint.SpawnedEnemy == enemy)) enemy.Resolve();
     }
 
     private void OnDrawGizmosSelected()

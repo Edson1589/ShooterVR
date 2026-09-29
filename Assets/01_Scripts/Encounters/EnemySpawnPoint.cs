@@ -5,14 +5,17 @@ public class EnemySpawnPoint : MonoBehaviour
     [Header("Aparición del enemigo")]
     public Enemy enemyPrefab;
     public float delay;
+    [Min(0)] public int waveIndex;
 
     public float Delay => Mathf.Max(0f, delay);
+    public Enemy SpawnedEnemy { get; private set; }
     public bool IsConfigured => enemyPrefab != null && enemyPrefab.enabled && enemyPrefab.gameObject.activeSelf && enemyPrefab.enemyData != null && enemyPrefab.enemyData.maxHealth > 0f;
 
     public Enemy Spawn()
     {
         if (!IsConfigured) return null;
-        return Instantiate(enemyPrefab, transform.position, transform.rotation);
+        SpawnedEnemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
+        return SpawnedEnemy;
     }
 
     private void OnDrawGizmosSelected()

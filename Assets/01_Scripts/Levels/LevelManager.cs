@@ -9,6 +9,9 @@ public class LevelManager : MonoBehaviour
     public AutomaticMovementVR playerMovement;
     public GameOverManager completionScreen;
 
+    [Tooltip("Si se asigna, comienza al terminar el recorrido y es el único encuentro obligatorio.")]
+    public EncounterController finalEncounter;
+
     [Header("Progresión del nivel")]
     public bool isFinalLevel;
 
@@ -21,6 +24,7 @@ public class LevelManager : MonoBehaviour
     public bool levelCompleted;
 
     private readonly List<EncounterController> requiredEncounters = new List<EncounterController>();
+    private readonly List<EncounterController> routeEncounters = new List<EncounterController>();
     private PlayerHealth player;
     private int nextSceneBuildIndex;
     private bool reachedExit;
@@ -43,9 +47,14 @@ public class LevelManager : MonoBehaviour
         {
             foreach (EncounterController encounter in root.GetComponentsInChildren<EncounterController>(true))
             {
-                if (encounter.StopsPlayerDuringEncounter) requiredEncounters.Add(encounter);
+                if (finalEncounter != null)
+                {
+                    if (encounter != finalEncounter) routeEncounters.Add(encounter);
+                }
+                else if (encounter.StopsPlayerDuringEncounter) requiredEncounters.Add(encounter);
             }
         }
+        if (finalEncounter != null) requiredEncounters.Add(finalEncounter);
 
         if (isFinalLevel) return;
         nextSceneBuildIndex = string.IsNullOrWhiteSpace(nextScenePath) ? -1 : SceneUtility.GetBuildIndexByScenePath(nextScenePath);
@@ -57,6 +66,13 @@ public class LevelManager : MonoBehaviour
 
     private void Update()
     {
+        if (!levelCompleted && finalEncounter != null && player != null && !player.IsDead
+            && playerMovement.HasCompletedPath && !playerMovement.IsMovementPaused
+            && finalEncounter.State == EncounterController.EncounterState.Waiting)
+        {
+            foreach (EncounterController encounter in routeEncounters) encounter.ResolveRemainingEnemies();
+            finalEncounter.TryBegin(player);
+        }
         if (!levelCompleted && playerMovement != null && (reachedExit || playerMovement.HasCompletedPath)) TryCompleteLevel(player);
     }
 
@@ -77,6 +93,7 @@ public class LevelManager : MonoBehaviour
     public bool TryCompleteLevel(PlayerHealth enteringPlayer)
     {
         if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null || enteringPlayer != player || player.IsDead) return false;
+        if (finalEncounter != null && !playerMovement.HasCompletedPath) return false;
         if ((!reachedExit && !playerMovement.HasCompletedPath) || playerMovement.IsMovementPaused) return false;
 
         foreach (EncounterController encounter in requiredEncounters)

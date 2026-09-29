@@ -28,6 +28,8 @@ public class EnemyData : ScriptableObject
 
     [Header("Daño: tirador")]
     public BulletData bulletData;
+    [Tooltip("Dispara en su primera actualización, después de orientar el arma al jugador.")]
+    public bool fireImmediatelyOnSpawn;
 
     [Header("Puntuación")]
     public int scoreValue = 10;

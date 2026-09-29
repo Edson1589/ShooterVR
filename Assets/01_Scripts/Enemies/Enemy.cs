@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
     public bool IsResolved { get; private set; }
+    public bool PreventDespawn { get; set; }
 
     private void Awake()
     {
@@ -56,7 +57,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Resolve()
     {
-        if (IsResolved) return;
+        if (IsResolved || (PreventDespawn && !IsDead)) return;
         IsResolved = true;
         Resolving?.Invoke();
         Resolved?.Invoke(this);

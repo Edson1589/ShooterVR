@@ -10,6 +10,11 @@ public class EncounterController : MonoBehaviour
     public bool stopPlayerDuringEncounter = true;
     public EnemySpawnPoint[] spawnPoints = new EnemySpawnPoint[0];
 
+    [Header("Oleadas (opcional)")]
+    public bool waitForWaveClear;
+    [Min(0f)] public float waveBreakDuration = 3f;
+    public bool preventEnemyDespawn;
+
     [Header("Aviso previo (opcional)")]
     public LevelBriefingUI briefing;
     [TextArea] public string warningMessage;
@@ -76,7 +81,30 @@ public class EncounterController : MonoBehaviour
             briefing.HideMessage(this);
         }
 
-        foreach (EnemySpawnPoint point in spawnPoints)
+        if (waitForWaveClear)
+        {
+            var waves = new SortedDictionary<int, List<EnemySpawnPoint>>();
+            foreach (EnemySpawnPoint point in spawnPoints)
+            {
+                if (!waves.TryGetValue(point.waveIndex, out List<EnemySpawnPoint> points))
+                {
+                    points = new List<EnemySpawnPoint>();
+                    waves.Add(point.waveIndex, points);
+                }
+                points.Add(point);
+            }
+            bool firstWave = true;
+            int unscheduled = spawnPoints.Length;
+            foreach (List<EnemySpawnPoint> points in waves.Values)
+            {
+                if (!firstWave) yield return new WaitForSeconds(waveBreakDuration);
+                firstWave = false;
+                unscheduled -= points.Count;
+                foreach (EnemySpawnPoint point in points) StartCoroutine(SpawnAfterDelay(point));
+                while (pendingSpawns > unscheduled || activeEnemies.Count > 0) yield return null;
+            }
+        }
+        else foreach (EnemySpawnPoint point in spawnPoints)
         {
             StartCoroutine(SpawnAfterDelay(point));
         }
@@ -90,6 +118,7 @@ public class EncounterController : MonoBehaviour
         Enemy enemy = point != null ? point.Spawn() : null;
         if (enemy != null)
         {
+            enemy.PreventDespawn = preventEnemyDespawn;
             activeEnemies.Add(enemy);
             enemy.Resolved += HandleEnemyResolved;
             activeEnemyCount = activeEnemies.Count;

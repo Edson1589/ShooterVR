@@ -36,7 +36,11 @@ public class EnemyCombat : MonoBehaviour
 
     private void Start()
     {
-        if (enemyData != null) nextAttackTime = Time.time + enemyData.attackCooldown;
+        if (enemyData != null)
+        {
+            bool immediateShot = enemyData.enemyType == EnemyType.Shooter && enemyData.fireImmediatelyOnSpawn;
+            nextAttackTime = Time.time + (immediateShot ? 0f : enemyData.attackCooldown);
+        }
     }
 
     private void LateUpdate()

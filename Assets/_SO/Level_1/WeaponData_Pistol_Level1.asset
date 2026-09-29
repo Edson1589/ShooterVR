@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59fb77c9d8747b548832b4d9cfbb88af, type: 3}
+  m_Name: WeaponData_Pistol_Level1
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: Pistola
+  weaponPrefab: {fileID: 3096024554046610633, guid: 5ccde08f2d1a75b4a80b7b0bc3b10816, type: 3}
+  bulletData: {fileID: 11400000, guid: 83598f5780798884c96d0683f4f6e029, type: 2}
+  fireCooldown: 0.25
+  magazineSize: 18
+  reloadDuration: 1.2
+  fireSound: {fileID: 8300000, guid: 8c6bbc786e157b840af304f0bd07a3cc, type: 3}
+  emptySound: {fileID: 8300000, guid: 4ae94c0747a6b174fb0d85d2dbb0b449, type: 3}
+  reloadStartSound: {fileID: 8300000, guid: dae4dbf108d7f1546a129372fb421073, type: 3}
+  reloadEndSound: {fileID: 8300000, guid: 02ceb241dedf10348973c68b529ddb9d, type: 3}
+  soundVolume: 0.65
