@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BulletData_Enemy_Level1
   m_EditorClassIdentifier: Assembly-CSharp::BulletData
   bulletName: Bala del enemigo tirador
-  speed: 12
+  speed: 40
   lifetime: 3
   damage: 12
   projectilePrefab: {fileID: 645309155043134879, guid: 77f037d58a67dfb4d896c5754027f87a, type: 3}
