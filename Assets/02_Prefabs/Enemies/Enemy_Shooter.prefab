@@ -45,7 +45,11 @@ GameObject:
   - component: {fileID: 4890877088692412768}
   - component: {fileID: 1081314213247444588}
   - component: {fileID: 9170636455756598125}
-  m_Layer: 0
+  - component: {fileID: 2170028105507593011}
+  - component: {fileID: 8467337471445974344}
+  - component: {fileID: 8603042941112599909}
+  - component: {fileID: 4152871861829272309}
+  m_Layer: 8
   m_Name: Enemy_Shooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +192,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   enemyData: {fileID: 11400000, guid: 34de9afd484802b4fae9cce2294920af, type: 2}
+--- !u!114 &2170028105507593011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217254743638181663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78f67c9c3cb6e8b4cbb72a2a379dfd6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   weaponView: {fileID: 8881639262420815624}
+--- !u!114 &8467337471445974344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217254743638181663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd1d9f5c31ec4e44823bc91d03b7815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+--- !u!114 &8603042941112599909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217254743638181663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3959c3d925d394d4485e4ff5c88cad9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVisualFeedback
+--- !u!114 &4152871861829272309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217254743638181663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0d662767e6ca3d4fbc6091ff31b2d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShooterVisualController
+  footSoleOffset: 0.08
 --- !u!1001 &457918976920510831
 PrefabInstance:
   m_ObjectHideFlags: 0

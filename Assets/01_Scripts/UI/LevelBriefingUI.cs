@@ -15,7 +15,6 @@ public class LevelBriefingUI : MonoBehaviour
     [Tooltip("Objetos decorativos del briefing completo que se ocultan en modo advertencia compacta.")]
     [SerializeField] private GameObject[] fullBriefingOnlyObjects;
     [SerializeField] private bool showIntroduction = true;
-    [SerializeField] private bool showFirstAmbushPanel = true;
     [Min(1f)] [SerializeField] private float introductionDuration = 14f;
     [TextArea(3, 8)] [SerializeField] private string introductionMessage =
         "Apunta a los enemigos y pulsa el gatillo para disparar.\n\n" +
@@ -25,7 +24,8 @@ public class LevelBriefingUI : MonoBehaviour
     private Object messageOwner;
     private float expiresAt;
     private bool showingIntroduction;
-    private bool hasShownFirstAmbush;
+    private UnityEngine.UI.Graphic panelBackground;
+    private bool fullBackgroundEnabled;
     private bool compactWarning;
     private float messageStartedAt;
     private RectTransform panelRect;
@@ -41,6 +41,8 @@ public class LevelBriefingUI : MonoBehaviour
     private void Awake()
     {
         panelRect = panel != null ? panel.GetComponent<RectTransform>() : null;
+        panelBackground = panel != null ? panel.GetComponent<UnityEngine.UI.Graphic>() : null;
+        fullBackgroundEnabled = panelBackground != null && panelBackground.enabled;
         if (panelRect != null) fullPanelSize = panelRect.sizeDelta;
         if (titleText != null)
         {
@@ -82,15 +84,15 @@ public class LevelBriefingUI : MonoBehaviour
     public void ShowAmbushWarning(Object owner, string title, string message, float duration)
     {
         if (!isActiveAndEnabled || panel == null || playerCamera == null) return;
-        ShowMessage(owner, title, message, duration);
-        SetCompactWarning(!showFirstAmbushPanel || hasShownFirstAmbush);
-        hasShownFirstAmbush = true;
+        ShowMessage(owner, "¡EMBOSCADA!", string.Empty, duration);
+        SetCompactWarning(true);
         PositionPanel();
     }
 
     private void SetCompactWarning(bool compact)
     {
         compactWarning = compact;
+        if (panelBackground != null) panelBackground.enabled = !compact && fullBackgroundEnabled;
         if (panelRect != null)
             panelRect.sizeDelta = compact ? new Vector2(fullPanelSize.x, 110f) : fullPanelSize;
         if (bodyText != null) bodyText.gameObject.SetActive(!compact);

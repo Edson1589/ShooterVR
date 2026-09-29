@@ -1,12 +1,11 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(Animator))]
 public class EnemyLocomotionAnimation : MonoBehaviour
 {
-    [Min(0f)] [SerializeField] private float footSoleOffset = 0.08f;
+    public float footSoleOffset = 0.08f;
     private static readonly int Attack = Animator.StringToHash("Attack");
     private Enemy enemy;
+    private EnemyCombat combat;
     private Animator animator;
     private CapsuleCollider body;
     private Transform leftFoot;
@@ -17,6 +16,7 @@ public class EnemyLocomotionAnimation : MonoBehaviour
     private void Awake()
     {
         enemy = GetComponentInParent<Enemy>();
+        combat = GetComponentInParent<EnemyCombat>();
         animator = GetComponent<Animator>();
         animator.applyRootMotion = false;
         restPosition = transform.localPosition;
@@ -30,26 +30,24 @@ public class EnemyLocomotionAnimation : MonoBehaviour
 
     private void Update()
     {
-        if (enemy == null || enemy.enemyData == null) return;
+        if (enemy == null || enemy.enemyData == null || combat == null) return;
         if (enemy.enemyData.enemyType == EnemyType.Kamikaze)
         {
-            IsAttacking = IsAttacking ? enemy.CanContinueMeleeAttack : enemy.IsInMeleeRange;
+            IsAttacking = IsAttacking ? combat.CanContinueMeleeAttack : combat.IsInMeleeRange;
             animator.SetBool(Attack, IsAttacking);
         }
     }
 
     public void MeleeHit()
     {
-        if (enemy != null && animator.GetBool(Attack)) enemy.ApplyAnimatedMeleeHit();
+        if (combat != null && animator.GetBool(Attack)) combat.ApplyAnimatedMeleeHit();
     }
 
     private void LateUpdate()
     {
-        if (enemy == null || enemy.IsDead || enemy.IsResolved || body == null || !body.enabled
-            || leftFoot == null || rightFoot == null) return;
+        if (enemy == null || enemy.IsDead || enemy.IsResolved || body == null || !body.enabled || leftFoot == null || rightFoot == null) return;
         transform.localPosition = restPosition;
-        float soleY = Mathf.Min(leftFoot.position.y, rightFoot.position.y)
-            - footSoleOffset * Mathf.Abs(enemy.transform.lossyScale.y);
+        float soleY = Mathf.Min(leftFoot.position.y, rightFoot.position.y) - footSoleOffset * Mathf.Abs(enemy.transform.lossyScale.y);
         transform.position += Vector3.up * (body.bounds.min.y - soleY);
     }
 }

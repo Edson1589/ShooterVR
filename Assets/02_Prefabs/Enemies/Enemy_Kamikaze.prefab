@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5503313147978772952}
   - component: {fileID: 5618376345898152045}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ContactArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,10 @@ GameObject:
   - component: {fileID: 1564505345249684304}
   - component: {fileID: 6689634032502685900}
   - component: {fileID: 4384010309975575239}
-  m_Layer: 0
+  - component: {fileID: 6814538808644779915}
+  - component: {fileID: 1687791768704653226}
+  - component: {fileID: 1329647410896285796}
+  m_Layer: 8
   m_Name: Enemy_Kamikaze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,8 +216,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   enemyData: {fileID: 11400000, guid: 4db733cc9e6b411fa43741f195329d14, type: 2}
+--- !u!114 &6814538808644779915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3574275175610127447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78f67c9c3cb6e8b4cbb72a2a379dfd6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   weaponView: {fileID: 0}
-  footSoleOffset: 0.08
+--- !u!114 &1687791768704653226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3574275175610127447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd1d9f5c31ec4e44823bc91d03b7815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+--- !u!114 &1329647410896285796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3574275175610127447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3959c3d925d394d4485e4ff5c88cad9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVisualFeedback
 --- !u!1001 &5415764960157074903
 PrefabInstance:
   m_ObjectHideFlags: 0

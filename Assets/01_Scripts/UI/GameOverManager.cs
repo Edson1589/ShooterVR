@@ -16,6 +16,7 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private PlayerHealth player;
     [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text gameOverEnemiesText;
     [SerializeField] private Behaviour[] gameplayToDisable = new Behaviour[0];
     [SerializeField] private string mainMenuScenePath = "Assets/00_Scenes/MainMenu.unity";
     [Header("Victoria")]
@@ -40,6 +41,8 @@ public class GameOverManager : MonoBehaviour
     public void ShowGameOver()
     {
         if (shown || gameOverPanel == null || playerCamera == null) return;
+        if (gameOverEnemiesText != null)
+            gameOverEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
         if (scoreText != null) scoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
         ShowResult(gameOverPanel);
     }
@@ -50,7 +53,7 @@ public class GameOverManager : MonoBehaviour
         if (victoryScoreText != null)
             victoryScoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
         if (victoryEnemiesText != null)
-            victoryEnemiesText.text = $"Enemigos eliminados: {(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
+            victoryEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
         ShowResult(victoryPanel);
     }
 
@@ -70,12 +73,26 @@ public class GameOverManager : MonoBehaviour
             foreach (WeaponShooter shooter in player.GetComponentsInChildren<WeaponShooter>(true)) shooter.enabled = false;
             foreach (MeleeAttack melee in player.GetComponentsInChildren<MeleeAttack>(true)) melee.enabled = false;
         }
+        if (resultPanel == gameOverPanel) HideEnemiesOnGameOver();
         Vector3 forward = Vector3.ProjectOnPlane(playerCamera.forward, Vector3.up);
         if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
         forward.Normalize();
         resultPanel.transform.SetPositionAndRotation(playerCamera.position + forward * 2f, Quaternion.LookRotation(forward));
         resultPanel.SetActive(true);
         Time.timeScale = 0f;
+    }
+
+    private void HideEnemiesOnGameOver()
+    {
+        GameObject[] roots = gameObject.scene.GetRootGameObjects();
+
+        foreach (GameObject root in roots)
+            foreach (EncounterController encounter in root.GetComponentsInChildren<EncounterController>(true))
+                encounter.enabled = false;
+
+        foreach (GameObject root in roots)
+            foreach (Enemy enemy in root.GetComponentsInChildren<Enemy>(true))
+                enemy.gameObject.SetActive(false);
     }
 
     public void Retry()

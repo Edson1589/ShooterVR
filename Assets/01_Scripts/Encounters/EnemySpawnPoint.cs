@@ -3,8 +3,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class EnemySpawnPoint : MonoBehaviour
 {
-    [SerializeField] private Enemy enemyPrefab;
-    [Min(0f)] [SerializeField] private float delay;
+    public Enemy enemyPrefab;
+    public float delay;
 
     public float Delay => Mathf.Max(0f, delay);
     public bool IsConfigured => enemyPrefab != null && enemyPrefab.enabled
