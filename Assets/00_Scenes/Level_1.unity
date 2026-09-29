@@ -94804,13 +94804,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneAudio
   music: {fileID: 305132995}
+  musicVolume: 0.16
   finalLevel: 0
   warningSound: {fileID: 8300000, guid: 8a5b2f1c6862eb440b2578eb967e8c97, type: 3}
   clearSound: {fileID: 8300000, guid: bb31d5999410e724c839ae664a9f9df1, type: 3}
   victorySound: {fileID: 8300000, guid: 4ba55553eda798a4191f1a1b6084e205, type: 3}
   campaignSound: {fileID: 8300000, guid: 9c9244f94f5689e40ad30bc770b32aa7, type: 3}
   defeatSound: {fileID: 8300000, guid: ef63a85037b2a1a4f817d2e186e9f0cd, type: 3}
-  musicVolume: 0.16
 --- !u!4 &305132997
 Transform:
   m_ObjectHideFlags: 0
@@ -457022,13 +457022,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   playerMovement: {fileID: 402740591}
+  completionScreen: {fileID: 157968972}
   isFinalLevel: 0
   nextScenePath: Assets/00_Scenes/Level_2.unity
   onGameCompleted:
     m_PersistentCalls:
       m_Calls: []
   levelCompleted: 0
-  completionScreen: {fileID: 157968972}
 --- !u!4 &1704486347
 Transform:
   m_ObjectHideFlags: 0
@@ -552405,6 +552405,10 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 990530335}
+    - target: {fileID: 4890733416532406451, guid: fdb5cd772dedc4a43959f90263e979c7, type: 3}
+      propertyPath: m_text
+      value: 300 / 300
+      objectReference: {fileID: 0}
     - target: {fileID: 4890733416532406451, guid: fdb5cd772dedc4a43959f90263e979c7, type: 3}
       propertyPath: m_fontSize
       value: 32.9
