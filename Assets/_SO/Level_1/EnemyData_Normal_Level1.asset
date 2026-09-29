@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61dbc5c57cd447643a11e3a38710e487, type: 3}
+  m_Name: EnemyData_Normal_Level1
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyType: 0
+  maxHealth: 30
+  attackCooldown: 1.4
+  moveSpeed: 1.25
+  stoppingDistance: 0.65
+  contactDamage: 8
+  bulletData: {fileID: 0}
+  requireClearShot: 0
+  scoreValue: 10
+  hitEffectPrefab: {fileID: 7629920231516843979, guid: add14e05dd96b01419d12cbd1978c877, type: 3}
+  deathEffectPrefab: {fileID: 1892318604094699764, guid: a45be98aba1105a4385a101b491cc0c0, type: 3}
+  spawnEffectPrefab: {fileID: 5229263455334344742, guid: 65312dd95bbea6f48a3befa05f83a07e, type: 3}
+  fireSound: {fileID: 0}
+  deathSound: {fileID: 8300000, guid: 8cd0d773bced3a2488f7f4916291df6d, type: 3}
+  footstepSound: {fileID: 8300000, guid: e8621ab639bd0c8408d2e3d9bf7f033a, type: 3}
+  soundVolume: 0.65
+  stepDistance: 0.8

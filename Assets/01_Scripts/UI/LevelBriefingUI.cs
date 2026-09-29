@@ -1,0 +1,163 @@
+using System.Collections;
+using TMPro;
+using UnityEngine;
+
+public class LevelBriefingUI : MonoBehaviour
+{
+    [Header("Referencias del jugador")]
+    public AutomaticMovementVR movement;
+    public Transform playerCamera;
+    [Header("Elementos de la presentación")]
+    public GameObject panel;
+    public TMP_Text titleText;
+    public TMP_Text bodyText;
+    public TMP_Text countdownText;
+
+    public GameObject[] fullBriefingOnlyObjects;
+    [Header("Introducción del nivel")]
+    public bool showIntroduction = true;
+    [Min(1f)] public float introductionDuration = 14f;
+    [TextArea(3, 8)] public string introductionMessage =
+        "Apunta a los enemigos y pulsa el gatillo para disparar.\n\n" +
+        "Para RECARGAR, apunta el arma hacia abajo un momento y vuelve a levantarla.\n\n" +
+        "El avance es automático. En las paradas, elimina a todos los enemigos para continuar.";
+
+    private Object messageOwner;
+    private float expiresAt;
+    private bool showingIntroduction;
+    private UnityEngine.UI.Graphic panelBackground;
+    private bool fullBackgroundEnabled;
+    private bool compactWarning;
+    private float messageStartedAt;
+    private RectTransform panelRect;
+    private Vector2 fullPanelSize;
+    private Vector2 fullTitlePosition;
+    private Vector2 fullCountdownPosition;
+    private float fullTitleAlpha;
+
+    [Header("Advertencias posteriores")]
+    public Vector3 warningViewOffset = new Vector3(0f, 0.85f, 2.4f);
+    [Range(0.25f, 2f)] public float blinkFrequency = 1f;
+
+    private void Awake()
+    {
+        panelRect = panel != null ? panel.GetComponent<RectTransform>() : null;
+        panelBackground = panel != null ? panel.GetComponent<UnityEngine.UI.Graphic>() : null;
+        fullBackgroundEnabled = panelBackground != null && panelBackground.enabled;
+        if (panelRect != null) fullPanelSize = panelRect.sizeDelta;
+        if (titleText != null)
+        {
+            fullTitlePosition = titleText.rectTransform.anchoredPosition;
+            fullTitleAlpha = titleText.alpha;
+        }
+        if (countdownText != null) fullCountdownPosition = countdownText.rectTransform.anchoredPosition;
+        if (panel != null) panel.SetActive(false);
+        if (showIntroduction && movement != null) movement.PauseMovement(this);
+    }
+
+    private IEnumerator Start()
+    {
+        if (!showIntroduction) yield break;
+        yield return null;
+        showingIntroduction = true;
+        ShowMessage(this, "PREPÁRATE PARA EL COMBATE", introductionMessage, introductionDuration);
+        yield return new WaitForSeconds(introductionDuration);
+        HideMessage(this);
+        showingIntroduction = false;
+        if (movement != null) movement.ResumeMovement(this);
+    }
+
+    public void ShowMessage(Object owner, string title, string message, float duration)
+    {
+        if (!isActiveAndEnabled || panel == null || playerCamera == null) return;
+        SetCompactWarning(false);
+        messageOwner = owner;
+        messageStartedAt = Time.time;
+        expiresAt = Time.time + duration;
+        titleText.text = title;
+        bodyText.text = message;
+        PositionPanel();
+        panel.SetActive(true);
+        UpdateCountdown();
+    }
+
+    public void ShowAmbushWarning(Object owner, string title, string message, float duration)
+    {
+        if (!isActiveAndEnabled || panel == null || playerCamera == null) return;
+        ShowMessage(owner, "¡EMBOSCADA!", string.Empty, duration);
+        SetCompactWarning(true);
+        PositionPanel();
+    }
+
+    private void SetCompactWarning(bool compact)
+    {
+        compactWarning = compact;
+        if (panelBackground != null) panelBackground.enabled = !compact && fullBackgroundEnabled;
+        if (panelRect != null) panelRect.sizeDelta = compact ? new Vector2(fullPanelSize.x, 110f) : fullPanelSize;
+        if (bodyText != null) bodyText.gameObject.SetActive(!compact);
+        if (titleText != null)
+        {
+            titleText.rectTransform.anchoredPosition = compact ? Vector2.zero : fullTitlePosition;
+            titleText.alpha = fullTitleAlpha;
+        }
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(!compact);
+            countdownText.rectTransform.anchoredPosition = fullCountdownPosition;
+        }
+        if (fullBriefingOnlyObjects != null)
+        {
+            for (int i = 0; i < fullBriefingOnlyObjects.Length; i++)
+            {
+                if (fullBriefingOnlyObjects[i] != null) fullBriefingOnlyObjects[i].SetActive(!compact);
+            }
+        }
+    }
+
+    public void HideMessage(Object owner)
+    {
+        if (messageOwner != owner) return;
+        messageOwner = null;
+        if (panel != null) panel.SetActive(false);
+    }
+
+    private void LateUpdate()
+    {
+        if (panel == null || !panel.activeSelf) return;
+        PositionPanel();
+        UpdateCountdown();
+        if (compactWarning && titleText != null)
+        {
+            float pulse = 0.5f + 0.5f * Mathf.Cos((Time.time - messageStartedAt) * blinkFrequency * 2f * Mathf.PI);
+            titleText.alpha = fullTitleAlpha * Mathf.Lerp(0.55f, 1f, pulse);
+        }
+        if (Time.time >= expiresAt) HideMessage(messageOwner);
+    }
+
+    private void PositionPanel()
+    {
+        if (compactWarning)
+        {
+            panel.transform.SetPositionAndRotation(playerCamera.position + playerCamera.rotation * warningViewOffset, playerCamera.rotation); return;
+        }
+        Vector3 forward = Vector3.ProjectOnPlane(playerCamera.forward, Vector3.up);
+        if (forward.sqrMagnitude < 0.01f) forward = movement != null ? movement.transform.forward : Vector3.forward;
+        forward.Normalize();
+        panel.transform.SetPositionAndRotation(playerCamera.position + forward * 2.4f, Quaternion.LookRotation(forward, Vector3.up));
+    }
+
+    private void UpdateCountdown()
+    {
+        if (countdownText == null || compactWarning) return;
+        int remaining = Mathf.Max(0, Mathf.CeilToInt(expiresAt - Time.time));
+        countdownText.text = showingIntroduction && messageOwner == this ? $"El recorrido comienza en {remaining} s" : $"Enemigos en {remaining} s · Mira a tu alrededor";
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        messageOwner = null;
+        if (panel != null) panel.SetActive(false);
+        if (movement != null) movement.ResumeMovement(this);
+    }
+}
