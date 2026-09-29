@@ -1,21 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[DisallowMultipleComponent]
 public class UIHoloPulse : MonoBehaviour
 {
     private static readonly int UnscaledTimeId = Shader.PropertyToID("_UnscaledTime");
 
     [Header("Material Holográfico")]
-    [Tooltip("Imágenes con material URP_HoloCanvasUI para actualizar _UnscaledTime.")]
-    [SerializeField] private Graphic[] holoGraphics;
+    public Graphic[] holoGraphics;
 
     [Header("Borde Pulsante")]
-    [Tooltip("Borde glowing opcional que pulsa suavemente.")]
-    [SerializeField] private Graphic pulsingBorder;
-    [SerializeField] private float pulseFrequency = 1.2f;
-    [Range(0f, 1f)] [SerializeField] private float minAlpha = 0.55f;
-    [Range(0f, 1f)] [SerializeField] private float maxAlpha = 0.95f;
+    public Graphic pulsingBorder;
+    public float pulseFrequency = 1.2f;
+    [Range(0f, 1f)] public float minAlpha = 0.55f;
+    [Range(0f, 1f)] public float maxAlpha = 0.95f;
 
     private MaterialPropertyBlock propBlock;
     private Color borderBaseColor;

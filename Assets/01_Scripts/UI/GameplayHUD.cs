@@ -1,15 +1,15 @@
 using TMPro;
 using UnityEngine;
 
-/// <summary>Connects the compact headset HUD to the level's existing health and score.</summary>
-[DisallowMultipleComponent]
 public class GameplayHUD : MonoBehaviour
 {
-    [SerializeField] private PlayerHealth player;
-    [SerializeField] private ScoreManager scoreManager;
-    [SerializeField] private HealthUI healthUI;
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private Canvas hudCanvas;
+    [Header("Datos del jugador")]
+    public PlayerHealth player;
+    public ScoreManager scoreManager;
+    [Header("Elementos de la interfaz")]
+    public HealthUI healthUI;
+    public TMP_Text scoreText;
+    public Canvas hudCanvas;
 
     private void OnEnable()
     {
@@ -20,7 +20,6 @@ public class GameplayHUD : MonoBehaviour
 
     private void Start()
     {
-        // All Awake methods have initialized health before the first display refresh.
         if (player != null) UpdateHealth(player.CurrentHealth);
         if (scoreManager != null) UpdateScore(scoreManager.CurrentScore);
     }

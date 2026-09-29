@@ -42,8 +42,7 @@ public class EnemyCombat : MonoBehaviour
     private void LateUpdate()
     {
         if (!CanAct || enemyData.enemyType != EnemyType.Shooter) return;
-        if (shooterVisual != null && shooterVisual.isActiveAndEnabled)
-            shooterVisual.UpdatePose(HasTarget, TargetPosition);
+        if (shooterVisual != null && shooterVisual.isActiveAndEnabled) shooterVisual.UpdatePose(HasTarget, TargetPosition);
         if (!HasTarget || weaponView == null || !weaponView.HasFirePoint) return;
         if ((TargetPosition - weaponView.FirePosition).sqrMagnitude < 0.001f) return;
         if (Time.time < nextAttackTime) return;
@@ -104,6 +103,7 @@ public class EnemyCombat : MonoBehaviour
         }
 
         projectile.Initialize(bulletData, direction, firedByEnemy: true);
+        OneShotAudio.Play(enemyData.fireSound, weaponView.FirePosition, enemyData.soundVolume);
 
         if (bulletData.shootEffectPrefab != null && weaponView != null)
         {

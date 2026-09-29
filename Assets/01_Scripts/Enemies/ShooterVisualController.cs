@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ShooterVisualController : MonoBehaviour
 {
+    [Header("Ajuste de los pies al suelo")]
     public float footSoleOffset = 0.08f;
     private EnemyCombat combat;
     private Transform shooterVisual;

@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class WeaponAmmoUI : MonoBehaviour
 {
-    [Header("UI")]
+    [Header("Interfaz")]
     public TMP_Text ammoText;
-    public TMP_Text reloadText;
 
     private WeaponShooter weaponShooter;
 
@@ -18,28 +17,23 @@ public class WeaponAmmoUI : MonoBehaviour
     {
         weaponShooter.AmmoChanged += HandleAmmoChanged;
 
-        weaponShooter.ReloadStateChanged += HandleReloadStateChanged;
     }
 
     private void OnDisable()
     {
         weaponShooter.AmmoChanged -= HandleAmmoChanged;
 
-        weaponShooter.ReloadStateChanged -= HandleReloadStateChanged;
     }
 
     private void HandleAmmoChanged(int currentAmmo, int magazineSize)
     {
-        ammoText.text = $"{currentAmmo} / {magazineSize}";
+        if (ammoText == null) return;
+        ammoText.text = currentAmmo.ToString();
+        ammoText.color = currentAmmo <= 0 ? new Color(1f, 0.3f, 0.3f) : currentAmmo <= magazineSize * 0.2f ? new Color(1f, 0.75f, 0.25f) : Color.white;
     }
 
-    private void HandleReloadStateChanged(bool isReloading)
+    private void Start()
     {
-        reloadText.gameObject.SetActive(isReloading);
-
-        if (isReloading)
-        {
-            reloadText.text = "RECARGANDO...";
-        }
+        HandleAmmoChanged(weaponShooter.CurrentAmmo, weaponShooter.MagazineSize);
     }
 }

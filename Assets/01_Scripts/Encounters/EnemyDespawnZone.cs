@@ -1,7 +1,5 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(BoxCollider))]
 public class EnemyDespawnZone : MonoBehaviour
 {
     private void Reset()

@@ -2,30 +2,28 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-/// <summary>
-/// Shows the Game Over screen when the player dies and freezes gameplay
-/// (player movement, enemies, physics) via Time.timeScale, without needing
-/// to know how those systems are implemented internally.
-/// </summary>
 public class GameOverManager : MonoBehaviour
 {
-    [Header("References")]
-    [Tooltip("World-space panel positioned in front of the headset once on death.")]
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private Transform playerCamera;
-    [SerializeField] private PlayerHealth player;
-    [SerializeField] private ScoreManager scoreManager;
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text gameOverEnemiesText;
-    [SerializeField] private Behaviour[] gameplayToDisable = new Behaviour[0];
-    [SerializeField] private string mainMenuScenePath = "Assets/00_Scenes/MainMenu.unity";
+    [Header("Referencias")]
+    public GameObject gameOverPanel;
+    public Transform playerCamera;
+    public PlayerHealth player;
+    public ScoreManager scoreManager;
+    [Header("Resultados de derrota")]
+    public TMP_Text scoreText;
+    public TMP_Text gameOverEnemiesText;
+    [Header("Control de la partida")]
+    public Behaviour[] gameplayToDisable = new Behaviour[0];
+    public string mainMenuScenePath = "Assets/00_Scenes/MainMenu.unity";
+
     [Header("Victoria")]
-    [SerializeField] private GameObject victoryPanel;
-    [SerializeField] private TMP_Text victoryScoreText;
-    [SerializeField] private TMP_Text victoryEnemiesText;
+    public GameObject victoryPanel;
+    public TMP_Text victoryScoreText;
+    public TMP_Text victoryEnemiesText;
+
     [Header("Tiempo del nivel")]
-    [SerializeField] private TMP_Text gameOverTimeText;
-    [SerializeField] private TMP_Text victoryTimeText;
+    public TMP_Text gameOverTimeText;
+    public TMP_Text victoryTimeText;
     private double levelStartedAt;
     private bool shown;
     private bool loading;
@@ -54,8 +52,7 @@ public class GameOverManager : MonoBehaviour
     public void ShowGameOver()
     {
         if (shown || gameOverPanel == null || playerCamera == null) return;
-        if (gameOverEnemiesText != null)
-            gameOverEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
+        if (gameOverEnemiesText != null) gameOverEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
         if (scoreText != null) scoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
         ShowResult(gameOverPanel);
     }
@@ -63,16 +60,15 @@ public class GameOverManager : MonoBehaviour
     public void ShowVictory()
     {
         if (shown || victoryPanel == null || playerCamera == null) return;
-        if (victoryScoreText != null)
-            victoryScoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
-        if (victoryEnemiesText != null)
-            victoryEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
+        if (victoryScoreText != null) victoryScoreText.text = $"Puntuación: {(scoreManager != null ? scoreManager.CurrentScore : 0)}";
+        if (victoryEnemiesText != null) victoryEnemiesText.text = $"{(scoreManager != null ? scoreManager.DefeatedEnemies : 0)} / {(scoreManager != null ? scoreManager.TotalEnemies : 0)}";
         ShowResult(victoryPanel);
     }
 
     private void ShowResult(GameObject resultPanel)
     {
         shown = true;
+        if (SceneAudio.Instance != null) SceneAudio.Instance.Finish(resultPanel == victoryPanel);
         int seconds = ElapsedSeconds;
         string elapsed = $"Tiempo: {seconds / 60:00}:{seconds % 60:00}";
         if (gameOverTimeText != null) gameOverTimeText.text = elapsed;
@@ -133,11 +129,10 @@ public class GameOverManager : MonoBehaviour
         {
             SceneManager.LoadSceneAsync(path, LoadSceneMode.Single);
         }
-        catch (System.Exception exception)
+        catch (System.Exception)
         {
             loading = false;
             Time.timeScale = 0f;
-            Debug.LogError($"No se pudo cargar {path}: {exception.Message}", this);
         }
     }
 

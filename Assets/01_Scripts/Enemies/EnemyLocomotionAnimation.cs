@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyLocomotionAnimation : MonoBehaviour
 {
+    [Header("Ajuste de los pies al suelo")]
     public float footSoleOffset = 0.08f;
     private static readonly int Attack = Animator.StringToHash("Attack");
     private Enemy enemy;

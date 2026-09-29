@@ -32,11 +32,7 @@ public static class SaveSystem
 
     private static bool IsValid(SaveData data)
     {
-        return data != null && data.version == CurrentVersion && data.results != null
-            && data.results.TrueForAll(result => result != null)
-            && (data.gameCompleted
-                ? string.IsNullOrEmpty(data.nextScene)
-                : !string.IsNullOrWhiteSpace(data.nextScene) && Application.CanStreamedLevelBeLoaded(data.nextScene));
+        return data != null && data.version == CurrentVersion && data.results != null && data.results.TrueForAll(result => result != null) && (data.gameCompleted ? string.IsNullOrEmpty(data.nextScene) : !string.IsNullOrWhiteSpace(data.nextScene) && Application.CanStreamedLevelBeLoaded(data.nextScene));
     }
 
     private static bool TryRead(string path, out SaveData data)
@@ -51,22 +47,17 @@ public static class SaveSystem
                 data = saved;
                 return true;
             }
-            Debug.LogWarning($"Guardado no válido o incompatible: {path}");
         }
         catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException || exception is ArgumentException)
         {
-            Debug.LogWarning($"No se pudo leer el guardado: {exception.Message}");
+            return false;
         }
         return false;
     }
 
     private static bool Save(SaveData data)
     {
-        if (!IsValid(data))
-        {
-            Debug.LogError("No se pudo guardar: el progreso o la escena pendiente no son válidos.");
-            return false;
-        }
+        if (!IsValid(data)) return false;
 
         try
         {
@@ -79,7 +70,6 @@ public static class SaveSystem
         }
         catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException || exception is NotSupportedException)
         {
-            Debug.LogError($"No se pudo guardar el progreso: {exception.Message}");
             return false;
         }
     }

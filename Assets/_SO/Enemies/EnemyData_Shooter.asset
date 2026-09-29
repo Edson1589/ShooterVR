@@ -23,3 +23,8 @@ MonoBehaviour:
   hitEffectPrefab: {fileID: 5445336559609952028, guid: 7c1a09fe4720fc54d9cd75a94e29edb2, type: 3}
   deathEffectPrefab: {fileID: 7412521699938713590, guid: 9aaf8465288307448b737ed3acb8c238, type: 3}
   spawnEffectPrefab: {fileID: 5220132721113178015, guid: 27b62e489a813114da9c590fa1f067ad, type: 3}
+  fireSound: {fileID: 8300000, guid: c48a092acde1e6c4fa49e14956f07558, type: 3}
+  deathSound: {fileID: 8300000, guid: 8cd0d773bced3a2488f7f4916291df6d, type: 3}
+  footstepSound: {fileID: 8300000, guid: e8621ab639bd0c8408d2e3d9bf7f033a, type: 3}
+  soundVolume: 0.65
+  stepDistance: 0.8

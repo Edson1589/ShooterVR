@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class WeaponShooter : MonoBehaviour
 {
-    [Header("Input")]
+    [Header("Entrada")]
     public InputActionReference fireAction;
 
     private WeaponData weaponData;
@@ -84,9 +84,15 @@ public class WeaponShooter : MonoBehaviour
 
         if (Time.time < nextShotTime) return;
 
-        if (currentAmmo <= 0) return;
+        if (currentAmmo <= 0)
+        {
+            OneShotAudio.Play(weaponData.emptySound, transform.position, weaponData.soundVolume);
+            nextShotTime = Time.time + weaponData.fireCooldown;
+            return;
+        }
 
         if (!FireProjectile()) return;
+        OneShotAudio.Play(weaponData.fireSound, weaponView.FirePosition, weaponData.soundVolume);
 
         currentAmmo--;
 
@@ -138,12 +144,15 @@ public class WeaponShooter : MonoBehaviour
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
+        OneShotAudio.Play(weaponData.reloadStartSound, transform.position, weaponData.soundVolume);
 
         NotifyReloadStateChanged();
 
         yield return new WaitForSeconds(weaponData.reloadDuration);
 
         currentAmmo = weaponData.magazineSize;
+
+        OneShotAudio.Play(weaponData.reloadEndSound, transform.position, weaponData.soundVolume);
 
         isReloading = false;
         reloadCoroutine = null;

@@ -15,6 +15,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public float invulnerabilityDuration = 0.5f;
 
+    [Header("Audio")]
+    public AudioClip lowHealthSound;
+    [Range(0f, 1f)] public float lowHealthThreshold = 0.25f;
+
     [Header("Eventos")]
     public HealthChangedEvent onHealthChanged = new HealthChangedEvent();
     public DamageTakenEvent onDamageTaken = new DamageTakenEvent();
@@ -46,7 +50,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         invulnerableUntilTime = Time.time + invulnerabilityDuration;
 
+        bool wasLow = currentHealth <= maxHealth * lowHealthThreshold;
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
+        if (!IsDead)
+        {
+            if (!wasLow && currentHealth <= maxHealth * lowHealthThreshold) OneShotAudio.Play(lowHealthSound, transform.position, 0.5f, false);
+        }
 
         onHealthChanged.Invoke(currentHealth);
         onDamageTaken.Invoke(amount);

@@ -12,6 +12,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public EnemyData enemyData;
 
     private float currentHealth;
+    private Vector3 lastStepPosition;
+    private float stepTravel;
     public float CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0f;
     public bool IsResolved { get; private set; }
@@ -24,6 +26,19 @@ public class Enemy : MonoBehaviour, IDamageable
             return;
         }
         currentHealth = enemyData.maxHealth;
+        lastStepPosition = transform.position;
+    }
+
+    private void LateUpdate()
+    {
+        Vector3 movement = Vector3.ProjectOnPlane(transform.position - lastStepPosition, Vector3.up);
+        lastStepPosition = transform.position;
+        if (Time.timeScale == 0f || IsDead || IsResolved || enemyData == null) return;
+        if (movement.magnitude > 1f) { stepTravel = 0f; return; }
+        stepTravel += movement.magnitude;
+        if (stepTravel < Mathf.Max(0.1f, enemyData.stepDistance)) return;
+        stepTravel = 0f;
+        OneShotAudio.Play(enemyData.footstepSound, transform.position, enemyData.soundVolume * 0.45f);
     }
 
     public void TakeDamage(float amount)
@@ -33,6 +48,7 @@ public class Enemy : MonoBehaviour, IDamageable
         Damaged?.Invoke(amount);
         if (IsDead)
         {
+            OneShotAudio.Play(enemyData.deathSound, transform.position, enemyData.soundVolume);
             Resolve();
             OnEnemyDied?.Invoke(enemyData);
         }

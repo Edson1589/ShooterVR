@@ -1,12 +1,10 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class EncounterTrigger : MonoBehaviour
 {
-    [SerializeField] private EncounterController encounter;
-    [InspectorName("Resolver enemigos al entrar")]
-    [SerializeField] private bool resolveOnEnter;
+    [Header("Activación del encuentro")]
+    public EncounterController encounter;
+    public bool resolveOnEnter;
 
     private void Reset()
     {

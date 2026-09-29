@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[DisallowMultipleComponent]
 public class EncounterController : MonoBehaviour
 {
     public enum EncounterState { Waiting, Running, Completed, Cancelled }
 
-    [SerializeField] private bool stopPlayerDuringEncounter = true;
-    [SerializeField] private EnemySpawnPoint[] spawnPoints = new EnemySpawnPoint[0];
+    [Header("Configuración del encuentro")]
+    public bool stopPlayerDuringEncounter = true;
+    public EnemySpawnPoint[] spawnPoints = new EnemySpawnPoint[0];
+
     [Header("Aviso previo (opcional)")]
-    [SerializeField] private LevelBriefingUI briefing;
-    [TextArea] [SerializeField] private string warningMessage;
-    [Min(0f)] [SerializeField] private float warningDuration;
-    [SerializeField] private EncounterState state;
-    [SerializeField] private int pendingSpawns;
-    [SerializeField] private int activeEnemyCount;
+    public LevelBriefingUI briefing;
+    [TextArea] public string warningMessage;
+    [Min(0f)] public float warningDuration;
+    [Header("Estado del encuentro")]
+    public EncounterState state;
+    public int pendingSpawns;
+    public int activeEnemyCount;
+
     [InspectorName("Enemigos resueltos")]
-    [SerializeField] private int resolvedEnemyCount;
+    public int resolvedEnemyCount;
 
     private readonly HashSet<Enemy> activeEnemies = new HashSet<Enemy>();
     private AutomaticMovementVR pausedMovement;
@@ -44,10 +47,7 @@ public class EncounterController : MonoBehaviour
         var uniquePoints = new HashSet<EnemySpawnPoint>();
         foreach (EnemySpawnPoint point in spawnPoints)
         {
-            if (point == null || !point.IsConfigured || !uniquePoints.Add(point))
-            {
-                return;
-            }
+            if (point == null || !point.IsConfigured || !uniquePoints.Add(point)) return;
         }
 
         if (stopPlayerDuringEncounter)
@@ -62,6 +62,7 @@ public class EncounterController : MonoBehaviour
         }
 
         state = EncounterState.Running;
+        if (SceneAudio.Instance != null) SceneAudio.Instance.BeginEncounter(this);
         pendingSpawns = spawnPoints.Length;
         StartCoroutine(BeginSpawns());
     }
@@ -125,6 +126,7 @@ public class EncounterController : MonoBehaviour
     {
         if (state != EncounterState.Running || pendingSpawns > 0 || activeEnemies.Count > 0) return;
         state = EncounterState.Completed;
+        if (SceneAudio.Instance != null) SceneAudio.Instance.EndEncounter(this, true);
         ReleaseMovement();
     }
 
@@ -137,6 +139,7 @@ public class EncounterController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (SceneAudio.Instance != null) SceneAudio.Instance.EndEncounter(this, false);
         StopAllCoroutines();
         if (briefing != null) briefing.HideMessage(this);
         if (state == EncounterState.Running) state = EncounterState.Cancelled;

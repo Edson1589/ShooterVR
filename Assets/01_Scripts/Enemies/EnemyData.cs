@@ -7,7 +7,7 @@ public enum EnemyType
     Kamikaze = 2
 }
 
-[CreateAssetMenu(fileName = "EnemyData_", menuName = "VR Shooter/Enemies/Enemy Data")]
+[CreateAssetMenu(fileName = "EnemyData_", menuName = "Shooter VR/Enemigos/Datos del enemigo")]
 public class EnemyData : ScriptableObject
 {
     [Header("Tipo y vida")]
@@ -26,7 +26,7 @@ public class EnemyData : ScriptableObject
     [Header("Contacto: normal y kamikaze")]
     public float contactDamage = 10f;
 
-    [Header("Daño: Shooter")]
+    [Header("Daño: tirador")]
     public BulletData bulletData;
 
     [Header("Puntuación")]
@@ -36,4 +36,11 @@ public class EnemyData : ScriptableObject
     public GameObject hitEffectPrefab;
     public GameObject deathEffectPrefab;
     public GameObject spawnEffectPrefab;
+
+    [Header("Audio")]
+    public AudioClip fireSound;
+    public AudioClip deathSound;
+    public AudioClip footstepSound;
+    [Range(0f, 1f)] public float soundVolume = 0.65f;
+    [Min(0.1f)] public float stepDistance = 0.8f;
 }

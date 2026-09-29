@@ -13,16 +13,13 @@ public class BulletProjectile : MonoBehaviour
     {
         int enemyLayer = LayerMask.NameToLayer("Enemy");
         int projectileLayer = LayerMask.NameToLayer("EnemyProjectile");
-        if (enemyLayer >= 0 && projectileLayer >= 0)
-            Physics.IgnoreLayerCollision(enemyLayer, projectileLayer, true);
+        if (enemyLayer >= 0 && projectileLayer >= 0) Physics.IgnoreLayerCollision(enemyLayer, projectileLayer, true);
     }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
-
-    // Configura y lanza el proyectil.
     public void Initialize(BulletData data, Vector3 direction, bool firedByEnemy = false)
     {
         if (data == null)
@@ -55,15 +52,10 @@ public class BulletProjectile : MonoBehaviour
         {
             transform.forward = moveDir;
         }
-
-        // Normalizar para que la velocidad dependa unicamente del valor configurado en BulletData.
         rb.linearVelocity = moveDir * bulletData.speed;
-
-        // Instanciar el efecto de estela / cola si está configurado en el ScriptableObject
         if (bulletData.trailEffectPrefab != null)
         {
             activeTrail = Instantiate(bulletData.trailEffectPrefab, transform.position, transform.rotation, transform);
-            // Colocar en la parte posterior de la bala (cola)
             activeTrail.transform.localPosition = new Vector3(0f, 0f, -0.4f);
             activeTrail.transform.localRotation = Quaternion.identity;
         }
@@ -74,12 +66,9 @@ public class BulletProjectile : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (!initialized) return;
-
-        // El collider puede estar en un hijo mientras que el componente que recibe daño se encuentra en el objeto padre.
         IDamageable damageable = collision.collider.GetComponentInParent<IDamageable>();
         if (firedByEnemy)
         {
-            // Enemy layers pass through each other; only the player receives enemy bullet damage.
             damageable = collision.collider.GetComponentInParent<PlayerHealth>();
         }
 
@@ -89,6 +78,8 @@ public class BulletProjectile : MonoBehaviour
         }
 
         SpawnImpactEffect(collision);
+        AudioClip impact = collision.collider.GetComponentInParent<Enemy>() != null ? bulletData.enemyImpactSound : collision.collider.GetComponentInParent<PlayerHealth>() == null ? bulletData.surfaceImpactSound : null;
+        OneShotAudio.Play(impact, collision.contactCount > 0 ? collision.GetContact(0).point : transform.position, bulletData.impactVolume);
 
         CancelInvoke(nameof(OnLifetimeExpired));
         DestroyProjectile();
@@ -99,9 +90,7 @@ public class BulletProjectile : MonoBehaviour
         if (bulletData == null || bulletData.impactEffectPrefab == null) return;
 
         Vector3 hitPoint = transform.position;
-        Quaternion hitRotation = transform.forward != Vector3.zero 
-            ? Quaternion.LookRotation(-transform.forward) 
-            : Quaternion.identity;
+        Quaternion hitRotation = transform.forward != Vector3.zero  ? Quaternion.LookRotation(-transform.forward)  : Quaternion.identity;
 
         if (collision.contactCount > 0)
         {

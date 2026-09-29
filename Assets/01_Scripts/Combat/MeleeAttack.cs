@@ -11,6 +11,9 @@ public class MeleeAttack : MonoBehaviour
     [Header("Daño")]
     public float damage = 15f;
     public float attackCooldown = 0.3f;
+    
+    [Header("Audio")]
+    public AudioClip hitSound;
 
     private readonly HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
@@ -90,6 +93,7 @@ public class MeleeAttack : MonoBehaviour
         if (enemy == null || enemy.IsDead || !hitEnemies.Add(enemy)) return;
 
         enemy.TakeDamage(damage);
+        OneShotAudio.Play(hitSound, transform.position, 0.65f);
 
         nextAttackTime = Time.time + attackCooldown;
     }

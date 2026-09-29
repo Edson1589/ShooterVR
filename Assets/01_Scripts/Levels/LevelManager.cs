@@ -3,21 +3,22 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-[DisallowMultipleComponent]
 public class LevelManager : MonoBehaviour
 {
-    [InspectorName("Movimiento del jugador")]
-    [SerializeField] private AutomaticMovementVR playerMovement;
-    [InspectorName("Es el último nivel")]
-    [SerializeField] private bool isFinalLevel;
-    [InspectorName("Ruta de la siguiente escena")]
-    [Tooltip("Ruta completa de una escena habilitada en la lista de compilación, incluida la extensión .unity.")]
-    [SerializeField] private string nextScenePath;
-    [InspectorName("Al completar la partida")]
-    [SerializeField] private UnityEvent onGameCompleted = new UnityEvent();
-    [InspectorName("Nivel completado")]
-    [SerializeField] private bool levelCompleted;
-    [SerializeField] private GameOverManager completionScreen;
+    [Header("Referencias")]
+    public AutomaticMovementVR playerMovement;
+    public GameOverManager completionScreen;
+
+    [Header("Progresión del nivel")]
+    public bool isFinalLevel;
+
+    public string nextScenePath;
+
+    [Header("Eventos")]
+    public UnityEvent onGameCompleted = new UnityEvent();
+
+    [Header("Estado del nivel")]
+    public bool levelCompleted;
 
     private readonly List<EncounterController> requiredEncounters = new List<EncounterController>();
     private PlayerHealth player;
@@ -34,7 +35,6 @@ public class LevelManager : MonoBehaviour
         player = playerMovement != null ? playerMovement.GetComponent<PlayerHealth>() : null;
         if (player == null || player.gameObject.scene != gameObject.scene)
         {
-            Debug.LogError($"{name}: asigna el movimiento del jugador de esta escena.", this);
             enabled = false;
             return;
         }
@@ -51,31 +51,25 @@ public class LevelManager : MonoBehaviour
         nextSceneBuildIndex = string.IsNullOrWhiteSpace(nextScenePath) ? -1 : SceneUtility.GetBuildIndexByScenePath(nextScenePath);
         if (nextSceneBuildIndex < 0)
         {
-            Debug.LogError($"{name}: la siguiente escena no está habilitada en la compilación: {nextScenePath}", this);
             enabled = false;
         }
     }
 
     private void Update()
     {
-        if (!levelCompleted && playerMovement != null && (reachedExit || playerMovement.HasCompletedPath))
-            TryCompleteLevel(player);
+        if (!levelCompleted && playerMovement != null && (reachedExit || playerMovement.HasCompletedPath)) TryCompleteLevel(player);
     }
 
     public void ReachExit(PlayerHealth enteringPlayer)
     {
-        if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null
-            || enteringPlayer != player || player.IsDead) return;
-
-        // Entering the finish volume is sufficient; reaching its exact centre is not required.
+        if (!isActiveAndEnabled || levelCompleted || enteringPlayer == null || enteringPlayer != player || player.IsDead) return;
         reachedExit = true;
         TryCompleteLevel(enteringPlayer);
     }
 
     public void GoToNextLevel()
     {
-        if (!levelCompleted || isFinalLevel || completionScreen == null
-            || string.IsNullOrWhiteSpace(nextScenePath)) return;
+        if (!levelCompleted || isFinalLevel || completionScreen == null || string.IsNullOrWhiteSpace(nextScenePath)) return;
 
         completionScreen.LoadNextLevel(nextScenePath);
     }
@@ -92,8 +86,7 @@ public class LevelManager : MonoBehaviour
 
         levelCompleted = true;
         playerMovement.StopMovement();
-        SaveSystem.CompleteLevel(nextScenePath, isFinalLevel,
-            completionScreen != null ? completionScreen.GetLevelResult() : null);
+        SaveSystem.CompleteLevel(nextScenePath, isFinalLevel, completionScreen != null ? completionScreen.GetLevelResult() : null);
         if (completionScreen != null)
         {
             completionScreen.ShowVictory();
@@ -111,11 +104,10 @@ public class LevelManager : MonoBehaviour
             SceneManager.LoadSceneAsync(nextSceneBuildIndex, LoadSceneMode.Single);
             return true;
         }
-        catch (System.Exception exception)
+        catch (System.Exception)
         {
             levelCompleted = false;
             enabled = false;
-            Debug.LogError($"{name}: no se pudo cargar la siguiente escena. {exception.Message}", this);
             return false;
         }
     }

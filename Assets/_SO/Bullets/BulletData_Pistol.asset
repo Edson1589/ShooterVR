@@ -20,3 +20,6 @@ MonoBehaviour:
   trailEffectPrefab: {fileID: 1391366374355100310, guid: d34e91d8e48284b4ba14fa0f1a6c104f, type: 3}
   shootEffectPrefab: {fileID: 1135749811845299359, guid: dae9f1a19862e9d42aa5c184f559dc05, type: 3}
   impactEffectPrefab: {fileID: 3837150254769955857, guid: 60f356c85c6ca0a44a201f99095b0d1c, type: 3}
+  enemyImpactSound: {fileID: 8300000, guid: 60c51296b492a784daa08ca043ad81be, type: 3}
+  surfaceImpactSound: {fileID: 8300000, guid: 2b49ff8eb8afde34992277c81ea32a38, type: 3}
+  impactVolume: 0.45

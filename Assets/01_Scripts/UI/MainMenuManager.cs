@@ -5,14 +5,14 @@ using TMPro;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [Tooltip("Name of the scene to load when starting a new game (must be in Build Settings).")]
-    [SerializeField] private string newGameSceneName = "Level_1";
+    [Header("Escenas de juego")]
+    public string newGameSceneName = "Level_1";
 
-    [Tooltip("Name of the level 2 scene to load (must be in Build Settings).")]
-    [SerializeField] private string level2SceneName = "Level_2";
+    public string level2SceneName = "Level_2";
 
-    [SerializeField] private Button continueButton;
-    [SerializeField] private TMP_Text continueDescription;
+    [Header("Continuar partida")]
+    public Button continueButton;
+    public TMP_Text continueDescription;
     private bool loading;
 
     private void OnEnable()
@@ -24,10 +24,7 @@ public class MainMenuManager : MonoBehaviour
     {
         bool hasSave = SaveSystem.TryLoad(out SaveData data);
         if (continueButton != null) continueButton.interactable = hasSave && !data.gameCompleted;
-        if (continueDescription != null)
-            continueDescription.text = !hasSave ? "SIN PARTIDA GUARDADA"
-                : data.gameCompleted ? "CAMPAÑA COMPLETADA"
-                : $"RETOMAR {System.IO.Path.GetFileNameWithoutExtension(data.nextScene).Replace('_', ' ')} DESDE EL INICIO";
+        if (continueDescription != null) continueDescription.text = !hasSave ? "SIN PARTIDA GUARDADA" : data.gameCompleted ? "CAMPAÑA COMPLETADA" : $"RETOMAR {System.IO.Path.GetFileNameWithoutExtension(data.nextScene).Replace('_', ' ')} DESDE EL INICIO";
     }
 
     public void NewGame()
@@ -62,11 +59,10 @@ public class MainMenuManager : MonoBehaviour
         {
             SceneManager.LoadSceneAsync(scene, LoadSceneMode.Single);
         }
-        catch (System.Exception exception)
+        catch (System.Exception)
         {
             loading = false;
             RefreshContinueButton();
-            Debug.LogError($"No se pudo cargar {scene}: {exception.Message}", this);
         }
     }
 

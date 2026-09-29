@@ -1,15 +1,13 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
 public class EnemySpawnPoint : MonoBehaviour
 {
+    [Header("Aparición del enemigo")]
     public Enemy enemyPrefab;
     public float delay;
 
     public float Delay => Mathf.Max(0f, delay);
-    public bool IsConfigured => enemyPrefab != null && enemyPrefab.enabled
-        && enemyPrefab.gameObject.activeSelf && enemyPrefab.enemyData != null
-        && enemyPrefab.enemyData.maxHealth > 0f;
+    public bool IsConfigured => enemyPrefab != null && enemyPrefab.enabled && enemyPrefab.gameObject.activeSelf && enemyPrefab.enemyData != null && enemyPrefab.enemyData.maxHealth > 0f;
 
     public Enemy Spawn()
     {

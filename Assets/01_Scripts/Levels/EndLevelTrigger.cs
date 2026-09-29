@@ -1,11 +1,10 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class EndLevelTrigger : MonoBehaviour
 {
     [InspectorName("Gestor del nivel")]
-    [SerializeField] private LevelManager levelManager;
+    [Header("Finalización del nivel")]
+    public LevelManager levelManager;
 
     private void Reset()
     {

@@ -18,3 +18,8 @@ MonoBehaviour:
   fireCooldown: 0.25
   magazineSize: 500
   reloadDuration: 1.2
+  fireSound: {fileID: 8300000, guid: 8c6bbc786e157b840af304f0bd07a3cc, type: 3}
+  emptySound: {fileID: 8300000, guid: 4ae94c0747a6b174fb0d85d2dbb0b449, type: 3}
+  reloadStartSound: {fileID: 8300000, guid: dae4dbf108d7f1546a129372fb421073, type: 3}
+  reloadEndSound: {fileID: 8300000, guid: 02ceb241dedf10348973c68b529ddb9d, type: 3}
+  soundVolume: 0.65
