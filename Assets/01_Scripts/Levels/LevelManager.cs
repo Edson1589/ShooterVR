@@ -47,7 +47,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        if (isFinalLevel || completionScreen != null) return;
+        if (isFinalLevel) return;
         nextSceneBuildIndex = string.IsNullOrWhiteSpace(nextScenePath) ? -1 : SceneUtility.GetBuildIndexByScenePath(nextScenePath);
         if (nextSceneBuildIndex < 0)
         {
@@ -92,6 +92,8 @@ public class LevelManager : MonoBehaviour
 
         levelCompleted = true;
         playerMovement.StopMovement();
+        SaveSystem.CompleteLevel(nextScenePath, isFinalLevel,
+            completionScreen != null ? completionScreen.GetLevelResult() : null);
         if (completionScreen != null)
         {
             completionScreen.ShowVictory();

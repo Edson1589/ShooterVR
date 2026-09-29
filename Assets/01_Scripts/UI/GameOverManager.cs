@@ -31,6 +31,19 @@ public class GameOverManager : MonoBehaviour
     private bool loading;
     private float previousTimeScale = 1f;
 
+    private int ElapsedSeconds => (int)System.Math.Max(0d, System.Math.Floor(Time.timeAsDouble - levelStartedAt));
+
+    public SaveData.LevelResult GetLevelResult()
+    {
+        return new SaveData.LevelResult
+        {
+            scene = gameObject.scene.path,
+            score = scoreManager != null ? scoreManager.CurrentScore : 0,
+            defeatedEnemies = scoreManager != null ? scoreManager.DefeatedEnemies : 0,
+            elapsedSeconds = ElapsedSeconds
+        };
+    }
+
     private void Awake()
     {
         levelStartedAt = Time.timeAsDouble;
@@ -60,7 +73,7 @@ public class GameOverManager : MonoBehaviour
     private void ShowResult(GameObject resultPanel)
     {
         shown = true;
-        int seconds = (int)System.Math.Max(0d, System.Math.Floor(Time.timeAsDouble - levelStartedAt));
+        int seconds = ElapsedSeconds;
         string elapsed = $"Tiempo: {seconds / 60:00}:{seconds % 60:00}";
         if (gameOverTimeText != null) gameOverTimeText.text = elapsed;
         if (victoryTimeText != null) victoryTimeText.text = elapsed;
